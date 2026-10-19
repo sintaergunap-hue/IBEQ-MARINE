@@ -4,202 +4,105 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IBEQ Main Dashboard</title>
-  
-  <!-- Leaflet CSS for Maps -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  
-  <!-- Google Fonts & Lucide Icons -->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
-  <!-- Chart.js for Donut Chart -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <style>
     :root {
-      --bg: #02080e;
-      --panel: #0b1e2b;
-      --card: #071d2c;
-      --card-dark: #051620;
-      --blue-line: #1a6b9c;
-      --cyan: #1aa6d0;
-      --th: #0d3a52;
-      --muted: #9fb3c0;
+      --bg: #02080e; --panel: #0b1e2b; --card: #071d2c; --card-dark: #051620;
+      --blue-line: #1a6b9c; --cyan: #1aa6d0; --th: #0d3a52; --muted: #9fb3c0;
     }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--bg); color: #fff; min-height: 100vh; padding: 32px; overflow-x: hidden; }
+    .dashboard-container { max-width: 1700px; margin: 0 auto; display: flex; flex-direction: column; gap: 36px; }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', sans-serif;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: #ffffff;
-      min-height: 100vh;
-      padding: 32px;
-      overflow-x: hidden;
-    }
-
-    .dashboard-container {
-      max-width: 1700px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 36px;
-    }
-
-    /* --- TOP NAVBAR HEADER --- */
+    /* HEADER */
     .header {
-      background-color: #03121b;
-      border: 1px solid var(--cyan);
-      border-radius: 22px;
-      padding: 16px 26px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
+      background-color: #03121b; border: 1px solid var(--cyan); border-radius: 22px;
+      padding: 16px 26px; display: flex; align-items: center; justify-content: space-between; gap: 18px;
     }
-
     .header-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
-
     .logo-badge {
       width: 50px; height: 50px; border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #19d3c5, #0b4a63 70%);
-      display: flex; align-items: center; justify-content: center;
-      border: 1px solid #1a5669; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; border: 1px solid #1a5669; flex-shrink: 0;
     }
-
     .pedal-pill {
       background-color: #cbd5e1; color: #0f172a; font-size: 8px; font-weight: 800;
-      padding: 7px 5px; border-radius: 6px 6px 14px 14px; letter-spacing: 0.5px; flex-shrink: 0;
+      padding: 7px 5px; border-radius: 6px 6px 14px 14px; letter-spacing: .5px; flex-shrink: 0;
     }
-
-    .title-box h1 { font-size: 22px; font-weight: 700; color: #ffffff; line-height: 1.15; }
+    .title-box h1 { font-size: 22px; font-weight: 700; color: #fff; line-height: 1.15; }
     .title-box p { font-size: 13px; color: #e2e8f0; max-width: 500px; line-height: 1.4; }
-
     .header-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
     .sep { width: 1px; height: 54px; background: #1c3340; }
-
     .nav-btn {
-      background-color: #0a3144; border: none; color: #38bdf8;
-      padding: 13px 22px; border-radius: 30px; font-size: 14px; font-weight: 600;
-      display: flex; align-items: center; gap: 8px; cursor: pointer;
+      background-color: #0a3144; border: none; color: #38bdf8; padding: 13px 22px; border-radius: 30px;
+      font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer;
     }
-
     .dropdown-select {
-      background-color: #03121b; border: 2px solid #38bdf8; color: #ffffff;
-      padding: 14px 16px; border-radius: 8px; font-size: 14px; font-weight: 500;
-      width: 215px; cursor: pointer; outline: none;
+      background-color: #03121b; border: 2px solid #38bdf8; color: #fff; padding: 14px 16px;
+      border-radius: 8px; font-size: 14px; font-weight: 500; width: 215px; cursor: pointer; outline: none;
     }
     .dropdown-select option { background: #06141d; }
-
     .btn-ring {
-      width: 62px; height: 62px; border-radius: 50%;
-      border: 5px solid #06b6d4; background: #03121b; color: #fff;
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      width: 62px; height: 62px; border-radius: 50%; border: 5px solid #06b6d4; background: #03121b;
+      color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
-
     .time-badge {
-      border: 1px solid var(--cyan); border-radius: 12px;
-      padding: 12px 22px; font-size: 20px; font-weight: 500; line-height: 1.35; width: 245px;
+      border: 1px solid var(--cyan); border-radius: 12px; padding: 12px 22px;
+      font-size: 20px; font-weight: 500; line-height: 1.35; width: 245px;
     }
-
     .btn-cyan {
-      background-color: #1593d0; color: #ffffff; border: none;
-      padding: 15px 16px; border-radius: 6px; font-size: 18px; font-weight: 600;
-      cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap;
+      background-color: #1593d0; color: #fff; border: none; padding: 15px 16px; border-radius: 6px;
+      font-size: 18px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap;
     }
-
     .lang { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 500; }
-
     .avatar-btn {
-      background-color: #0f1b26; border: 1px solid #334155; color: #ffffff;
-      width: 56px; height: 56px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px;
+      background-color: #0f1b26; border: 1px solid #334155; color: #fff; width: 56px; height: 56px;
+      border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px;
     }
 
-    /* --- MAIN CONTENT GRID --- */
-    .main-grid {
-      display: grid;
-      grid-template-columns: 480px 1fr;
-      gap: 40px;
-    }
+    /* MAIN GRID */
+    .main-grid { display: grid; grid-template-columns: 480px 1fr; gap: 40px; }
 
-    /* --- CARD MONITORING IKAL --- */
     .ikal-card {
-      background-color: var(--panel);
-      border-radius: 12px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      height: 440px;
-      overflow: hidden;
+      background-color: var(--panel); border-radius: 12px; padding: 12px;
+      display: flex; flex-direction: column; gap: 10px; height: 440px; overflow: hidden;
     }
-
-    .card-header-title {
-      display: flex; align-items: center; justify-content: space-between; padding: 0 4px; flex-shrink: 0;
-    }
-    .card-header-title h2 { font-size: 22px; font-weight: 500; color: #ffffff; }
+    .card-header-title { display: flex; align-items: center; justify-content: space-between; padding: 0 4px; flex-shrink: 0; }
+    .card-header-title h2 { font-size: 22px; font-weight: 500; color: #fff; }
     .wave-badge { color: #8fa4b3; display: flex; align-items: center; justify-content: center; }
-
     .ikal-scroll-wrapper { flex: 1; min-height: 0; display: flex; }
-
     .ikal-scroll-content {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      padding-right: 8px;
-      scrollbar-width: thin;
-      scrollbar-color: #1d4a5e transparent;
+      flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-right: 8px;
+      scrollbar-width: thin; scrollbar-color: #1d4a5e transparent;
     }
-
-    .sub-section {
-      border: 1px solid var(--blue-line);
-      border-radius: 10px;
-      padding: 12px;
-      background-color: var(--card);
-      flex-shrink: 0;
-    }
-
+    .sub-section { border: 1px solid var(--blue-line); border-radius: 10px; padding: 12px; background-color: var(--card); flex-shrink: 0; }
     .sub-section-header {
       display: flex; justify-content: space-between; align-items: center;
-      font-size: 15px; font-weight: 600; color: #ffffff; margin-bottom: 10px;
+      font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 10px;
     }
-
     .year-tag { font-size: 12px; color: var(--muted); font-weight: 500; }
-
     .stat-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; flex-shrink: 0; }
-
-    .stat-box {
-      background-color: var(--card-dark);
-      border-radius: 10px;
-      padding: 12px 12px;
-      border: 1px solid var(--blue-line);
-    }
-
+    .stat-box { background-color: var(--card-dark); border-radius: 10px; padding: 12px; border: 1px solid var(--blue-line); }
     .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; line-height: 1.25; }
-    .stat-val-large { font-size: 26px; font-weight: 600; color: #ffffff; }
+    .stat-val-large { font-size: 26px; font-weight: 600; color: #fff; }
 
     .status-card { border-radius: 10px; padding: 12px 14px; background-color: var(--card-dark); }
     .status-card.buruk { border: 1px solid #ef4444; }
     .status-card.sedang { border: 1px solid #eab308; }
     .status-card.baik { border: 1px solid #84cc16; }
-
     .status-card .val-buruk { color: #f87171; font-size: 28px; font-weight: 600; margin-top: 8px; }
     .status-card .val-sedang { color: #facc15; font-size: 28px; font-weight: 600; margin-top: 8px; }
     .status-card .val-baik { color: #a3e635; font-size: 28px; font-weight: 600; margin-top: 8px; }
 
     .custom-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
-    .custom-table th {
-      background-color: var(--th); color: #ffffff; padding: 8px 10px; font-weight: 700; font-size: 13px; white-space: nowrap;
-    }
+    .custom-table th { background-color: var(--th); color: #fff; padding: 8px 10px; font-weight: 700; font-size: 13px; white-space: nowrap; }
     .custom-table td { padding: 8px 10px; color: #cbd5e1; border-bottom: 1px solid #0f2b39; }
     .custom-table tbody tr:nth-child(odd) td { background: rgba(255,255,255,.035); }
 
@@ -209,44 +112,31 @@
     .pill-status.buruk { background-color: #b91c1c; color: #fee2e2; }
 
     .parameter-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-    .param-pill {
-      border: 1px solid var(--blue-line); color: #e0f2fe; border-radius: 16px; padding: 4px 12px; font-size: 12px;
-    }
+    .param-pill { border: 1px solid var(--blue-line); color: #e0f2fe; border-radius: 16px; padding: 4px 12px; font-size: 12px; }
 
-    /* --- MAP CONTAINER --- */
-    .map-container {
-      background-color: var(--panel);
-      border-radius: 12px;
-      padding: 12px;
-      position: relative;
-      height: 440px;
-    }
+    /* MAP */
+    .map-container { background-color: var(--panel); border-radius: 12px; padding: 12px; position: relative; height: 440px; }
     .map-inner { position: relative; width: 100%; height: 100%; border-radius: 10px; overflow: hidden; }
-
     #leaflet-map { width: 100%; height: 100%; background: #0a1a2a; }
-
     .float-btn {
       width: 62px; height: 62px; border-radius: 14px; background: rgba(6,18,28,.92);
       border: 1px solid #2a4252; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
     .map-left-btns { position: absolute; top: 20px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 14px; }
     .map-left-bottom { position: absolute; bottom: 24px; left: 20px; z-index: 1000; }
-
     .map-top-right {
-      position: absolute; top: 20px; right: 20px; z-index: 1000;
-      background: rgba(6,18,28,.92); border: 1px solid #2a4252; border-radius: 14px;
-      display: flex; align-items: center; height: 72px; padding: 0 6px;
+      position: absolute; top: 20px; right: 20px; z-index: 1000; background: rgba(6,18,28,.92);
+      border: 1px solid #2a4252; border-radius: 14px; display: flex; align-items: center; height: 72px; padding: 0 6px;
     }
     .map-top-right .tb { width: 58px; height: 56px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     .map-top-right .div { width: 1px; height: 46px; background: #2a4252; }
-
     .map-bottom-bar {
       position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 1000;
       display: flex; align-items: stretch; border-radius: 14px 14px 0 0; overflow: hidden;
     }
     .bar-dark {
-      display: flex; align-items: center; background: rgba(6,18,28,.95); border: 1px solid #2a4252; border-bottom: none;
-      border-radius: 14px 0 0 0; height: 84px; padding: 0 8px;
+      display: flex; align-items: center; background: rgba(6,18,28,.95); border: 1px solid #2a4252;
+      border-bottom: none; border-radius: 14px 0 0 0; height: 84px; padding: 0 8px;
     }
     .bar-light { display: flex; align-items: center; gap: 6px; background: rgba(40,50,60,.45); height: 84px; padding: 0 14px; }
     .grp { display: flex; align-items: center; gap: 4px; padding: 0 14px; height: 54px; cursor: pointer; border-right: 1px solid #2a4252; }
@@ -256,32 +146,58 @@
     .sat-label { position: absolute; right: 14px; bottom: 6px; z-index: 1000; font-size: 12px; color: #fff; text-shadow: 0 0 4px #000; }
 
     .layer-modal {
-      position: absolute; top: 20px; left: 100px; z-index: 1001; width: 280px;
+      position: absolute; top: 20px; left: 100px; z-index: 1001; width: 300px;
       background-color: rgba(6,24,34,.96); border: 1px solid #0d4b5c; border-radius: 10px;
-      padding: 12px; color: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: none;
+      padding: 12px; color: #fff; box-shadow: 0 10px 25px rgba(0,0,0,.5); display: none; max-height: 390px; overflow-y: auto;
     }
     .layer-modal.show { display: block; }
-
-    .layer-modal-header {
-      display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 700; margin-bottom: 10px;
-    }
-
+    .layer-modal-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 700; margin-bottom: 10px; }
     .btn-hide-layers {
       width: 100%; background-color: #031821; border: 1px solid #0ea5e9; color: #38bdf8;
-      padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; margin-bottom: 12px;
+      padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; margin-bottom: 8px;
     }
-
     .layer-legend-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-    .legend-badge {
-      display: flex; align-items: center; gap: 5px; font-size: 11px; padding: 3px 9px; border-radius: 10px; background-color: #02141c;
-    }
+    .legend-badge { display: flex; align-items: center; gap: 5px; font-size: 11px; padding: 3px 9px; border-radius: 10px; background-color: #02141c; }
     .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .layer-check-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+    .layer-check {
+      display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;
+      padding: 7px 9px; border-radius: 8px; background: #02141c; border: 1px solid #0d3a4a;
+    }
+    .layer-check input { accent-color: #22c55e; width: 15px; height: 15px; cursor: pointer; }
+    .layer-check .dot { width: 11px; height: 11px; }
+    .layer-check .cnt { margin-left: auto; color: #9fb3c0; font-size: 11px; }
 
-    /* Marker pill oil spill */
+    /* ===== Pill marker & legend (satu gaya untuk semua layer) ===== */
+    .pill-mk {
+      display: inline-flex; align-items: center; gap: 3px; width: 60px; height: 24px; padding: 2px 3px;
+      border-radius: 14px; border: 1.5px solid rgba(255,255,255,.92); box-shadow: 0 2px 6px rgba(0,0,0,.6);
+      cursor: pointer; box-sizing: border-box;
+    }
+    .pill-mk .pi { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .pill-mk .pc {
+      flex: 1; height: 100%; border-radius: 11px; color: #fff; font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; white-space: nowrap;
+    }
+    .panel-divider { height: 1px; background: #12394a; margin: 6px 0 8px; }
+    .filter-row {
+      display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 500;
+      padding: 8px 2px; cursor: pointer; border-bottom: 1px solid #12394a; margin-bottom: 10px;
+    }
+    #filterChev { display: inline-flex; transition: transform .2s; color: #9fb3c0; }
+    #filterChev.closed { transform: rotate(180deg); }
+    .btn-hide-all {
+      width: 100%; background-color: #031821; border: 1px solid #0ea5e9; color: #38bdf8;
+      padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    #legendPanel { left: 412px; width: 270px; }
+    .legend-row { display: flex; align-items: center; gap: 12px; padding: 9px 2px; font-size: 13px; line-height: 1.3; border-bottom: 1px solid #0d2a36; }
+    .legend-row:last-child { border-bottom: none; }
+    .legend-row .pill-mk { width: 64px; height: 26px; cursor: default; }
+    .legend-row small { display: block; color: #9fb3c0; font-size: 11px; }
     .oil-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: #ef4444; border: 1px solid #7f1d1d; border-radius: 20px;
-      padding: 2px 12px 2px 2px; color: #fff; font-weight: 700; font-size: 15px;
+      display: inline-flex; align-items: center; gap: 6px; background: #ef4444; border: 1px solid #7f1d1d;
+      border-radius: 20px; padding: 2px 12px 2px 2px; color: #fff; font-weight: 700; font-size: 15px;
       box-shadow: 0 2px 6px rgba(0,0,0,.6); white-space: nowrap;
     }
     .oil-pill .ic {
@@ -289,74 +205,34 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* --- BOTTOM CAROUSEL PANEL --- */
-    .bottom-panel {
-      background-color: var(--panel);
-      border-radius: 12px;
-      padding: 12px;
-      display: flex;
-      gap: 14px;
-    }
-
-    .bottom-panel-title {
-      width: 130px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 4px;
-    }
-    .bottom-panel-title h3 { font-size: 22px; font-weight: 500; color: #ffffff; line-height: 1.3; }
-
+    /* BOTTOM CAROUSEL */
+    .bottom-panel { background-color: var(--panel); border-radius: 12px; padding: 12px; display: flex; gap: 14px; }
+    .bottom-panel-title { width: 130px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 4px; }
+    .bottom-panel-title h3 { font-size: 22px; font-weight: 500; color: #fff; line-height: 1.3; }
     .carousel-container { flex: 1; overflow: hidden; position: relative; min-width: 0; }
-
-    .carousel-track {
-      display: flex; gap: 16px; transition: transform 0.3s ease-in-out; overflow-x: auto; scrollbar-width: none;
-    }
+    .carousel-track { display: flex; gap: 16px; transition: transform .3s ease-in-out; overflow-x: auto; scrollbar-width: none; }
     .carousel-track::-webkit-scrollbar { display: none; }
-
-    .carousel-card {
-      min-width: 1600px;
-      background-color: transparent;
-      display: flex;
-      gap: 14px;
-    }
-
+    .carousel-card { min-width: 1700px; background-color: transparent; display: flex; gap: 14px; }
     .c-section {
-      border: 1px solid var(--blue-line);
-      border-radius: 10px;
-      padding: 12px;
-      background: linear-gradient(180deg, #08243a, #061c2d);
-      min-height: 200px;
+      border: 1px solid var(--blue-line); border-radius: 10px; padding: 12px;
+      background: linear-gradient(180deg, #08243a, #061c2d); min-height: 200px;
     }
-
-    .c-section-title { font-size: 15px; font-weight: 600; color: #ffffff; margin-bottom: 10px; }
-
+    .c-section-title { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 10px; }
     .c-section .stat-box { border: 1px solid #f59e0b; background-color: var(--card); }
-
     .chart-box { width: 120px; height: 120px; position: relative; flex-shrink: 0; }
-
-    .chart-center-text {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;
-    }
-    .chart-center-text .num { font-size: 18px; font-weight: 800; color: #ffffff; }
+    .chart-center-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+    .chart-center-text .num { font-size: 18px; font-weight: 800; color: #fff; }
     .chart-center-text .lbl { font-size: 9px; color: var(--muted); }
-
     .carousel-navigation { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-
     .h-scroll-track { flex: 1; height: 6px; background-color: #08202d; border-radius: 4px; position: relative; }
-    .h-scroll-thumb {
-      width: 250px; height: 100%; background-color: #6b7a86; border-radius: 4px; position: absolute; left: 0; transition: left 0.2s ease;
-    }
-
+    .h-scroll-thumb { width: 250px; height: 100%; background-color: #6b7a86; border-radius: 4px; position: absolute; left: 0; transition: left .2s ease; }
     .nav-arrow { color: #38bdf8; cursor: pointer; }
-
-    .table-scroll-container {
-      max-height: 130px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #35566a transparent;
-    }
+    .table-scroll-container { max-height: 130px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #35566a transparent; }
     .table-scroll-container .custom-table th { position: sticky; top: 0; z-index: 1; }
 
-    /* PEWARNAAN JENIS TUMPAHAN */
     .type-cyan { color: #38bdf8; font-weight: 700; }
     .type-yellow { color: #facc15; font-weight: 700; }
     .type-red { color: #f87171; font-weight: 700; }
-    
-    /* STYLE UNTUK INFORMASI DENGAN WARNA MERAH */
     .text-missing { color: #ef4444; font-weight: 700; }
 
     @media (max-width: 1200px) {
@@ -368,26 +244,21 @@
 <body>
 
   <div class="dashboard-container">
-    
+
     <!-- TOP HEADER -->
     <header class="header">
       <div class="header-left">
-        <div class="logo-badge">
-          <i data-lucide="waves" width="26" color="#ffffff"></i>
-        </div>
+        <div class="logo-badge"><i data-lucide="waves" width="26" color="#ffffff"></i></div>
         <span class="pedal-pill">PEDAL</span>
         <div class="title-box">
           <h1>IBEQ Main Dashboard</h1>
           <p>Visualize, analyze, and manage environmental quality in one unified platform.</p>
         </div>
       </div>
-
       <div class="header-right">
         <div class="sep"></div>
         <button class="nav-btn"><i data-lucide="home" width="18"></i> Home</button>
-        <select class="dropdown-select">
-          <option>Ocean & Marine</option>
-        </select>
+        <select class="dropdown-select"><option>Ocean & Marine</option></select>
         <button class="btn-ring"><i data-lucide="bot" width="24"></i></button>
         <div class="sep"></div>
         <div class="time-badge" id="timeBadge">19/10/2026 08:00 WIB</div>
@@ -398,64 +269,37 @@
       </div>
     </header>
 
-    <!-- MAIN CONTENT GRID -->
+    <!-- MAIN GRID -->
     <main class="main-grid">
-      
-      <!-- MONITORING IKAL CARD -->
+
+      <!-- IKAL CARD -->
       <section class="ikal-card">
         <div class="card-header-title">
           <h2>Monitoring Indeks Kualitas Air Laut</h2>
           <div class="wave-badge"><i data-lucide="waves" width="26"></i></div>
         </div>
-
         <div class="ikal-scroll-wrapper">
           <div class="ikal-scroll-content" id="ikalScrollContainer">
-            
+
             <div class="sub-section">
-              <div class="sub-section-header">
-                <span>Ringkasan IKAL</span>
-                <span class="year-tag">2026</span>
-              </div>
+              <div class="sub-section-header"><span>Ringkasan IKAL</span><span class="year-tag">2026</span></div>
               <div class="stat-row-3">
-                <div class="stat-box">
-                  <div class="stat-label">IKAL Nasional</div>
-                  <div class="stat-val-large">74,8</div>
-                </div>
-                <div class="stat-box">
-                  <div class="stat-label">Memenuhi Baku Mutu</div>
-                  <div class="stat-val-large">71%</div>
-                </div>
-                <div class="stat-box">
-                  <div class="stat-label">Titik Pantau</div>
-                  <div class="stat-val-large">200</div>
-                </div>
+                <div class="stat-box"><div class="stat-label">IKAL Nasional</div><div class="stat-val-large">74,8</div></div>
+                <div class="stat-box"><div class="stat-label">Memenuhi Baku Mutu</div><div class="stat-val-large">71%</div></div>
+                <div class="stat-box"><div class="stat-label">Titik Pantau</div><div class="stat-val-large">200</div></div>
               </div>
             </div>
 
             <div class="stat-row-3">
-              <div class="status-card buruk">
-                <div class="stat-label">IKAL Buruk</div>
-                <div class="val-buruk">18</div>
-              </div>
-              <div class="status-card sedang">
-                <div class="stat-label">IKAL Sedang</div>
-                <div class="val-sedang">11</div>
-              </div>
-              <div class="status-card baik">
-                <div class="stat-label">IKAL Baik</div>
-                <div class="val-baik">9</div>
-              </div>
+              <div class="status-card buruk"><div class="stat-label">IKAL Buruk</div><div class="val-buruk">18</div></div>
+              <div class="status-card sedang"><div class="stat-label">IKAL Sedang</div><div class="val-sedang">11</div></div>
+              <div class="status-card baik"><div class="stat-label">IKAL Baik</div><div class="val-baik">9</div></div>
             </div>
 
             <div class="sub-section">
-              <div class="sub-section-header">
-                <span>3 Indeks Kualitas Air Laut Tertinggi</span>
-                <span class="year-tag">Nilai IKAL</span>
-              </div>
+              <div class="sub-section-header"><span>3 Indeks Kualitas Air Laut Tertinggi</span><span class="year-tag">Nilai IKAL</span></div>
               <table class="custom-table">
-                <thead>
-                  <tr><th>No</th><th>Provinsi</th><th>Kategori</th><th>Nilai</th></tr>
-                </thead>
+                <thead><tr><th>No</th><th>Provinsi</th><th>Kategori</th><th>Nilai</th></tr></thead>
                 <tbody>
                   <tr><td>1</td><td>Bali</td><td><span class="pill-status baik">Baik</span></td><td><strong>84,2</strong></td></tr>
                   <tr><td>2</td><td>Maluku Utara</td><td><span class="pill-status baik">Baik</span></td><td><strong>82,9</strong></td></tr>
@@ -465,14 +309,9 @@
             </div>
 
             <div class="sub-section">
-              <div class="sub-section-header">
-                <span>3 Indeks Kualitas Air Laut Terendah</span>
-                <span class="year-tag">Nilai IKAL</span>
-              </div>
+              <div class="sub-section-header"><span>3 Indeks Kualitas Air Laut Terendah</span><span class="year-tag">Nilai IKAL</span></div>
               <table class="custom-table">
-                <thead>
-                  <tr><th>No</th><th>Provinsi</th><th>Kategori</th><th>Nilai</th></tr>
-                </thead>
+                <thead><tr><th>No</th><th>Provinsi</th><th>Kategori</th><th>Nilai</th></tr></thead>
                 <tbody>
                   <tr><td>1</td><td>DKI Jakarta</td><td><span class="pill-status buruk">Buruk</span></td><td><strong>45,2</strong></td></tr>
                   <tr><td>2</td><td>Jawa Barat</td><td><span class="pill-status sedang">Sedang</span></td><td><strong>52,1</strong></td></tr>
@@ -487,10 +326,8 @@
                 <span style="font-size:12px; color:#38bdf8; font-weight:500;">2 periode/tahun</span>
               </div>
               <div class="parameter-tags">
-                <span class="param-pill">TSS</span>
-                <span class="param-pill">DO</span>
-                <span class="param-pill">Minyak & Lemak</span>
-                <span class="param-pill">Orthophosphate</span>
+                <span class="param-pill">TSS</span><span class="param-pill">DO</span>
+                <span class="param-pill">Minyak & Lemak</span><span class="param-pill">Orthophosphate</span>
                 <span class="param-pill">Amonia Total</span>
               </div>
             </div>
@@ -499,7 +336,7 @@
         </div>
       </section>
 
-      <!-- GIS MAP CONTAINER -->
+      <!-- GIS MAP -->
       <section class="map-container">
         <div class="map-inner" id="mapInner">
           <div id="leaflet-map"></div>
@@ -539,21 +376,39 @@
 
           <div class="sat-label">Satellite Hybrid</div>
 
-          <div class="layer-modal" id="layerModal">
+          <div class="layer-modal show" id="layerModal">
             <div class="layer-modal-header">
-              <span>Layer Management</span>
+              <span style="font-size:16px; font-weight:600;">Layer Management</span>
               <i data-lucide="x" width="16" style="cursor:pointer;" onclick="toggleLayerPanel()"></i>
             </div>
-            <div style="font-size: 12px; font-weight: 600; margin-bottom: 6px;">Filter <span>▲</span></div>
-            <button class="btn-hide-layers" onclick="toggleOilSpillLayers()">Toggle Oil Spill Markers</button>
+            <div class="panel-divider"></div>
 
-            <div style="font-size: 12px; font-weight: 700; margin-bottom: 6px;">▼ Environmental Quality</div>
-            <div class="layer-legend-list">
-              <span class="legend-badge"><span class="dot" style="background:#eab308;"></span> IKAL</span>
-              <span class="legend-badge"><span class="dot" style="background:#22c55e;"></span> Pemulihan</span>
-              <span class="legend-badge"><span class="dot" style="background:#ef4444;"></span> Oil Spill</span>
-              <span class="legend-badge"><span class="dot" style="background:#06b6d4;"></span> Pertek-SLO</span>
-              <span class="legend-badge"><span class="dot" style="background:#8b5cf6;"></span> Area Sensitif</span>
+            <div class="filter-row" onclick="toggleFilter()">
+              <span>Filter</span>
+              <span id="filterChev"><i data-lucide="chevron-up" width="18"></i></span>
+            </div>
+            <div id="filterBody" class="layer-check-list">
+              <label class="layer-check"><input type="checkbox" id="chkOil" checked onchange="setLayer('oil', this.checked)"><span class="dot" style="background:#ef4444;"></span><span>Oil Spill</span><span class="cnt" id="cntOil">...</span></label>
+              <label class="layer-check"><input type="checkbox" id="chkMgReal" checked onchange="setLayer('mgReal', this.checked)"><span class="dot" style="background:#22c55e;"></span><span>Mangrove Terealisasi</span><span class="cnt" id="cntMgReal">...</span></label>
+              <label class="layer-check"><input type="checkbox" id="chkMgPlan" checked onchange="setLayer('mgPlan', this.checked)"><span class="dot" style="background:#facc15;"></span><span>Mangrove Dalam Perencanaan</span><span class="cnt" id="cntMgPlan">...</span></label>
+            </div>
+            <button class="btn-hide-all" id="hideAllBtn" onclick="toggleAllLayers()">Hide All Layers</button>
+          </div>
+
+          <div class="layer-modal show" id="legendPanel">
+            <div class="layer-modal-header"><span style="font-size:16px; font-weight:600;">Legend</span></div>
+            <div class="panel-divider"></div>
+            <div class="legend-row" id="legOil">
+              <span class="pill-mk" style="background:#ef4444;"><span class="pi"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.5s6.5 7 6.5 11.5a6.5 6.5 0 0 1-13 0C5.5 9.5 12 2.5 12 2.5z"/></svg></span><span class="pc" style="background:#7f1d1d;"></span></span>
+              <span>Oil Spill<small>angka = no. kejadian</small></span>
+            </div>
+            <div class="legend-row" id="legMgReal">
+              <span class="pill-mk" style="background:#22c55e;"><span class="pi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span><span class="pc" style="background:#14532d;"></span></span>
+              <span>Mangrove Terealisasi<small>angka = luas (ha)</small></span>
+            </div>
+            <div class="legend-row" id="legMgPlan">
+              <span class="pill-mk" style="background:#facc15;"><span class="pi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span><span class="pc" style="background:#5c4a06;"></span></span>
+              <span>Mangrove Dalam Perencanaan<small>angka = luas (ha)</small></span>
             </div>
           </div>
         </div>
@@ -561,7 +416,7 @@
 
     </main>
 
-    <!-- BOTTOM CAROUSEL PANEL -->
+    <!-- BOTTOM CAROUSEL -->
     <footer class="bottom-panel">
       <div class="bottom-panel-title">
         <h3>Statistik Monitoring Ocean & Marine</h3>
@@ -570,11 +425,10 @@
 
       <div class="carousel-container">
         <div class="carousel-track" id="carouselTrack">
-          
           <div class="carousel-card">
-            
+
             <!-- TERUMBU KARANG -->
-            <div class="c-section" style="flex: 1;">
+            <div class="c-section" style="flex:1;">
               <div class="c-section-title">Terumbu Karang</div>
               <div style="display:flex; gap:12px;">
                 <div class="stat-box" style="flex:1;">
@@ -597,15 +451,12 @@
             </div>
 
             <!-- STATUS KERUSAKAN TERUMBU -->
-            <div class="c-section" style="flex: 0.9;">
+            <div class="c-section" style="flex:0.9;">
               <div class="c-section-title">Status Kerusakan Terumbu <span style="float:right; color:#38bdf8; font-size:12px; font-weight:500;">849 titik</span></div>
               <div style="display:flex; align-items:center; gap:14px;">
                 <div class="chart-box">
                   <canvas id="coralDonutChart"></canvas>
-                  <div class="chart-center-text">
-                    <div class="num">849</div>
-                    <div class="lbl">titik pantau</div>
-                  </div>
+                  <div class="chart-center-text"><div class="num">849</div><div class="lbl">titik pantau</div></div>
                 </div>
                 <div style="font-size:12px; display:flex; flex-direction:column; gap:6px; flex:1;">
                   <div style="display:flex; justify-content:space-between;"><span style="color:#22c55e;">● Sangat Baik</span><strong>124</strong></div>
@@ -616,74 +467,75 @@
               </div>
             </div>
 
-            <!-- MANGROVE -->
-            <div class="c-section" style="flex: 1.5;">
+            <!-- MANGROVE (DATA REAL) -->
+            <div class="c-section" style="flex:1.8;">
               <div class="c-section-title">Mangrove</div>
               <div style="display:flex; gap:10px;">
-                <div class="stat-box" style="flex:0.8;">
-                  <div class="stat-label">Luas Penanaman Mangrove</div>
-                  <div style="font-size:26px; font-weight:600; color:#34d399;">426,8 ha</div>
-                  <div style="font-size:12px; color:#64748b;">128 lokasi penanaman</div>
+
+                <div style="flex:1.5; display:flex; flex-direction:column; gap:10px;">
+                  <div style="display:flex; gap:10px;">
+                    <div class="stat-box" style="flex:1; border-color:#22c55e;">
+                      <div class="stat-label">Luas Terealisasi</div>
+                      <div style="font-size:24px; font-weight:600; color:#34d399;" id="mgRealHa">...</div>
+                      <div style="font-size:12px; color:#64748b;" id="mgRealLoc">... lokasi</div>
+                    </div>
+                    <div class="stat-box" style="flex:1; border-color:#eab308;">
+                      <div class="stat-label">Total Bibit Ditanam</div>
+                      <div style="font-size:24px; font-weight:600; color:#facc15;" id="mgTrees">...</div>
+                      <div style="font-size:12px; color:#64748b;">Lokasi terealisasi</div>
+                    </div>
+                  </div>
+
+                  <!-- RATE CARD DALAM PERENCANAAN -->
+                  <div class="stat-box" style="border-color:#facc15;">
+                    <div class="stat-label" style="display:flex; justify-content:space-between;">
+                      <span>Dalam Perencanaan</span><span style="color:#facc15;">● Kuning di peta</span>
+                    </div>
+                    <div style="font-size:24px; font-weight:600; color:#facc15;" id="mgPlanHa">...</div>
+                    <div style="font-size:12px; color:#64748b;" id="mgPlanLoc">... lokasi</div>
+                  </div>
                 </div>
-                <div class="stat-box" style="flex:0.8; border-color:#eab308;">
-                  <div class="stat-label">Total Pohon Mangrove</div>
-                  <div style="font-size:26px; font-weight:600; color:#facc15;">1.284.650</div>
-                  <div style="font-size:12px; color:#64748b;">Bibit telah ditanam</div>
-                </div>
-                <div style="flex:1.4;">
+
+                <div style="flex:1.5;">
                   <div style="font-size:12px; color:#94a3b8; margin-bottom:6px;">Lokasi Penanaman Mangrove <span style="float:right; color:#64748b;">Realisasi tertinggi</span></div>
                   <table class="custom-table">
-                    <thead>
-                      <tr><th>Lokasi</th><th>Provinsi</th><th>Luas</th><th>Pohon</th></tr>
-                    </thead>
-                    <tbody>
-                      <tr><td>Demak</td><td>Jawa Tengah</td><td>46,2 ha</td><td style="font-weight:700;">138.600</td></tr>
-                      <tr><td>Tarakan</td><td>Kalimantan Utara</td><td>38,5 ha</td><td style="font-weight:700;">115.500</td></tr>
-                      <tr><td>Langkat</td><td>Sumatera Utara</td><td>32,7 ha</td><td style="font-weight:700;">98.100</td></tr>
+                    <thead><tr><th>Lokasi</th><th>Provinsi</th><th>Luas</th><th>Bibit</th></tr></thead>
+                    <tbody id="mgTableBody">
+                      <tr><td colspan="4" style="text-align:center; color:#94a3b8;">Memuat data...</td></tr>
                     </tbody>
                   </table>
                 </div>
+
               </div>
             </div>
 
-            <!-- OIL SPILL SECTION -->
-            <div class="c-section" style="flex: 2.2;">
+            <!-- OIL SPILL -->
+            <div class="c-section" style="flex:2.2;">
               <div class="c-section-title">Oil Spill</div>
               <div style="display:flex; gap:12px;">
-                
                 <div class="stat-box" style="flex:0.7; border-color:#f97316;">
                   <div class="stat-label" style="font-weight:700; color:#fed7aa; line-height:1.2;" id="oilSpillBoxTitle">Total Kejadian Oil Spill ...</div>
-                  <div style="font-size:34px; font-weight:600; color:#fb923c; margin: 8px 0 4px 0;" id="oilSpillTotalNum">...</div>
+                  <div style="font-size:34px; font-weight:600; color:#fb923c; margin:8px 0 4px 0;" id="oilSpillTotalNum">...</div>
                   <div style="font-size:11px; color:#94a3b8; line-height:1.3;">berdasarkan data historis yang teridentifikasi</div>
                 </div>
-
                 <div style="flex:2;">
                   <div style="font-size:12px; color:#94a3b8; margin-bottom:6px;">Lokasi Kejadian Oil Spill</div>
                   <div class="table-scroll-container">
                     <table class="custom-table">
                       <thead>
-                        <tr>
-                          <th>Provinsi</th>
-                          <th>Lokasi</th>
-                          <th>Tahun</th>
-                          <th>Besaran Pencemar</th>
-                          <th>Jenis Tumpahan</th>
-                        </tr>
+                        <tr><th>Provinsi</th><th>Lokasi</th><th>Tahun</th><th>Besaran Pencemar</th><th>Jenis Tumpahan</th></tr>
                       </thead>
                       <tbody id="oilSpillTableBody">
-                        <tr>
-                          <td colspan="5" style="text-align:center; color:#94a3b8; padding:12px;">Memuat data...</td>
-                        </tr>
+                        <tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:12px;">Memuat data...</td></tr>
                       </tbody>
                     </table>
                   </div>
                 </div>
-
               </div>
             </div>
 
             <!-- PERTEK & SLO -->
-            <div class="c-section" style="flex: 1.2;">
+            <div class="c-section" style="flex:1.2;">
               <div class="c-section-title">Pertek & SLO</div>
               <div style="display:flex; gap:10px;">
                 <div class="stat-box" style="flex:0.8;">
@@ -705,14 +557,11 @@
             </div>
 
           </div>
-
         </div>
 
         <div class="carousel-navigation">
           <i data-lucide="chevron-left" class="nav-arrow" width="20" onclick="scrollCarousel(-300)"></i>
-          <div class="h-scroll-track">
-            <div class="h-scroll-thumb" id="hScrollThumb"></div>
-          </div>
+          <div class="h-scroll-track"><div class="h-scroll-thumb" id="hScrollThumb"></div></div>
           <i data-lucide="chevron-right" class="nav-arrow" width="20" onclick="scrollCarousel(300)"></i>
         </div>
       </div>
@@ -720,43 +569,100 @@
 
   </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
   <script>
-    // --- 1. INITIALIZE LEAFLET MAP (Satellite Hybrid) ---
+    // =====================================================
+    // KONFIGURASI SUMBER DATA
+    // =====================================================
+    // Oil spill: tab "Oil Spill (2)"
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/1VZb_j_iaMJXRX56AFjVvUyJLQSEW1vx23dwgG3-4a0U/gviz/tq?tqx=out:csv&gid=296430431';
+
+    // Mangrove: tab "RAW DATA"  --> GANTI ISI_GID dengan angka gid tab RAW DATA
+    const mangroveCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSY5Ix-OMMx9U4uLhV4PHkBUN7OVijzUFmWjEI09btjgAv8pIV087SachUM1Vk_SW6_7WyTYMd2-UVo/pub?gid=1462568354&single=true&output=csv';
+
+    // =====================================================
+    // 1. INISIALISASI PETA
+    // =====================================================
     const map = L.map('leaflet-map', {
-      center: [-2.5489, 118.0149],
-      zoom: 5,
-      zoomControl: false,
-      attributionControl: false,
-      zoomSnap: 0.25,
-      zoomDelta: 0.5
+      center: [-2.5489, 118.0149], zoom: 5, zoomControl: false, attributionControl: false,
+      zoomSnap: 0.25, zoomDelta: 0.5
     });
 
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }).addTo(map);
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }).addTo(map);
 
     const oilSpillLayerGroup = L.layerGroup().addTo(map);
-    let allBounds = [];
+    const mangroveRealGroup = L.layerGroup().addTo(map);
+    const mangrovePlanGroup = L.layerGroup().addTo(map);
+    const layerGroups = { oil: oilSpillLayerGroup, mgReal: mangroveRealGroup, mgPlan: mangrovePlanGroup };
+    const layerChecks = { oil: 'chkOil', mgReal: 'chkMgReal', mgPlan: 'chkMgPlan' };
+    let allBounds = [];        // oil spill
+    let mangroveBounds = [];   // mangrove
 
     map.on('zoomend', () => { document.getElementById('zoomVal').innerText = map.getZoom().toFixed(2); });
 
-    ['mapLeftBtns', 'mapLeftBottom', 'mapTopRight', 'mapBottomBar', 'layerModal'].forEach(id => {
+    ['mapLeftBtns', 'mapLeftBottom', 'mapTopRight', 'mapBottomBar', 'layerModal', 'legendPanel'].forEach(id => {
       const el = document.getElementById(id);
       L.DomEvent.disableClickPropagation(el);
       L.DomEvent.disableScrollPropagation(el);
     });
 
     function toggleOilSpillLayers() {
-      if (map.hasLayer(oilSpillLayerGroup)) {
-        map.removeLayer(oilSpillLayerGroup);
-      } else {
-        map.addLayer(oilSpillLayerGroup);
-      }
+      if (map.hasLayer(oilSpillLayerGroup)) map.removeLayer(oilSpillLayerGroup);
+      else map.addLayer(oilSpillLayerGroup);
     }
 
-    function toggleLayerPanel() { document.getElementById('layerModal').classList.toggle('show'); }
+    const legendRows = { oil: 'legOil', mgReal: 'legMgReal', mgPlan: 'legMgPlan' };
 
-    function fitAll() { if (allBounds.length) map.fitBounds(allBounds, { padding: [60, 60] }); }
+    function refreshLayerUI() {
+      let anyOn = false;
+      Object.keys(layerGroups).forEach(k => {
+        const on = map.hasLayer(layerGroups[k]);
+        anyOn = anyOn || on;
+        const row = document.getElementById(legendRows[k]);
+        if (row) row.style.display = on ? 'flex' : 'none';   // legenda hanya untuk layer yang aktif
+        const chk = document.getElementById(layerChecks[k]);
+        if (chk) chk.checked = on;
+      });
+      document.getElementById('hideAllBtn').innerText = anyOn ? 'Hide All Layers' : 'Show All Layers';
+    }
+
+    function setLayer(key, on) {
+      const g = layerGroups[key];
+      if (on) map.addLayer(g); else map.removeLayer(g);
+      refreshLayerUI();
+    }
+
+    function toggleAllLayers() {
+      const anyOn = Object.values(layerGroups).some(g => map.hasLayer(g));
+      Object.keys(layerGroups).forEach(k => {
+        const g = layerGroups[k];
+        if (anyOn) map.removeLayer(g); else map.addLayer(g);
+      });
+      refreshLayerUI();
+    }
+
+    function toggleLayerPanel() {
+      document.getElementById('layerModal').classList.toggle('show');
+      document.getElementById('legendPanel').classList.toggle('show');
+    }
+    function toggleFilter() {
+      const b = document.getElementById('filterBody');
+      const hidden = b.style.display === 'none';
+      b.style.display = hidden ? 'flex' : 'none';
+      document.getElementById('filterChev').classList.toggle('closed', !hidden);
+    }
+
+    function fitAll() {
+      const all = allBounds.concat(mangroveBounds);
+      // zoom hanya mempertimbangkan titik di wilayah Indonesia (abaikan koordinat nyasar)
+      const inRange = p => p[0] > -12 && p[0] < 8 && p[1] > 94 && p[1] < 142;
+      const out = all.filter(p => !inRange(p));
+      if (out.length) console.warn('Titik di luar wilayah Indonesia (cek koordinat di spreadsheet):', out);
+      let b = all.filter(inRange);
+      if (!b.length) b = all;
+      if (b.length) map.fitBounds(b, { padding: [60, 60], maxZoom: 8 });
+    }
 
     function toggleFullscreen() {
       const el = document.getElementById('mapInner');
@@ -785,7 +691,9 @@
     updateClock();
     setInterval(updateClock, 30000);
 
-    // --- 2. CSV PARSER (aman untuk sel berisi Enter, koma, dan tanda kutip) ---
+    // =====================================================
+    // 2. CSV PARSER (aman untuk sel berisi Enter, koma, kutip)
+    // =====================================================
     function parseCSV(text) {
       const rows = [];
       let row = [];
@@ -797,62 +705,61 @@
         const next = text[i + 1];
 
         if (inQuotes) {
-          if (char === '"' && next === '"') {
-            cell += '"';   // tanda kutip ganda di dalam sel
-            i++;
-          } else if (char === '"') {
-            inQuotes = false;
-          } else {
-            cell += char;  // termasuk Enter di dalam sel
-          }
+          if (char === '"' && next === '"') { cell += '"'; i++; }
+          else if (char === '"') { inQuotes = false; }
+          else { cell += char; }
         } else {
-          if (char === '"') {
-            inQuotes = true;
-          } else if (char === ',') {
-            row.push(cell.trim());
-            cell = '';
-          } else if (char === '\n' || char === '\r') {
+          if (char === '"') { inQuotes = true; }
+          else if (char === ',') { row.push(cell.trim()); cell = ''; }
+          else if (char === '\n' || char === '\r') {
             if (char === '\r' && next === '\n') i++;
             row.push(cell.trim());
             rows.push(row);
             row = [];
             cell = '';
-          } else {
-            cell += char;
-          }
+          } else { cell += char; }
         }
       }
 
-      // simpan baris terakhir jika file tidak diakhiri Enter
       if (cell !== '' || row.length > 0) {
         row.push(cell.trim());
         rows.push(row);
       }
-
       return rows;
     }
 
-    // --- 3. FORMAT POPUP SEJAJAR DAN 'TINDAK LANJUT' (marker model pill) ---
+    // =====================================================
+    // 3. OIL SPILL
+    // =====================================================
     const dropletSVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.5s6.5 7 6.5 11.5a6.5 6.5 0 0 1-13 0C5.5 9.5 12 2.5 12 2.5z"/></svg>';
+
+    const leafSVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>';
+    const PILL = {
+      oil:  { c: '#ef4444', d: '#7f1d1d' },
+      real: { c: '#22c55e', d: '#14532d' },
+      plan: { c: '#facc15', d: '#5c4a06' }
+    };
+    function pillHTML(pal, iconSVG, text) {
+      return `<div class="pill-mk" style="background:${pal.c};"><span class="pi">${iconSVG}</span><span class="pc" style="background:${pal.d};">${text}</span></div>`;
+    }
 
     function addOilSpillMarker(lat, lng, no, loc, prov, date, cause, type, est, action) {
       const icon = L.divIcon({
         className: '',
-        html: `<div class="oil-pill"><span class="ic">${dropletSVG}</span><span>${no}</span></div>`,
-        iconSize: [66, 30],
-        iconAnchor: [33, 15]
+        html: pillHTML(PILL.oil, dropletSVG, no),
+        iconSize: [60, 24],
+        iconAnchor: [30, 12],
+        popupAnchor: [0, -12]
       });
       const marker = L.marker([lat, lng], { icon });
 
-      // Pengecekan teks merah untuk Besaran Pencemar
       const isEstMissing = est.toLowerCase().includes('tidak ditemukan');
       const estFormatted = isEstMissing ? `<span class="text-missing">${est}</span>` : est;
 
       marker.bindPopup(`
         <div style="color:#0f172a; font-family:'Inter', sans-serif; font-size:12px; line-height:1.5; min-width:300px;">
           <strong style="color:#dc2626; font-size:13px; display:block; margin-bottom:8px;">⚠️ Kejadian Oil Spill</strong>
-          
-          <div style="display: grid; grid-template-columns: 120px 10px 1fr; gap: 4px 0; align-items: start;">
+          <div style="display:grid; grid-template-columns:120px 10px 1fr; gap:4px 0; align-items:start;">
             <span style="font-weight:700;">Provinsi</span><span>:</span><span>${prov}</span>
             <span style="font-weight:700;">Lokasi</span><span>:</span><span>${loc}</span>
             <span style="font-weight:700;">Titik Koordinat</span><span>:</span><span>${lat}, ${lng}</span>
@@ -868,9 +775,6 @@
       marker.addTo(oilSpillLayerGroup);
     }
 
-    // --- 4. FETCH DATA FROM SPREADSHEET TAB "Oil Spill (2)" (gid: 296430431) ---
-    const csvUrl = 'https://docs.google.com/spreadsheets/d/1VZb_j_iaMJXRX56AFjVvUyJLQSEW1vx23dwgG3-4a0U/gviz/tq?tqx=out:csv&gid=296430431';
-
     async function loadOilSpillData() {
       const tbody = document.getElementById('oilSpillTableBody');
 
@@ -884,9 +788,6 @@
         allBounds = [];
 
         if (dataRows.length > 1) {
-          // FILTER STRICT:
-          // - kolom ID harus angka murni (header "ID", baris kosong, dan sisa teks otomatis tersaring)
-          // - Lokasi dan Provinsi wajib terisi
           const rows = dataRows.filter(r => {
             if (!r || r.length < 3) return false;
             const id = (r[0] || '').trim();
@@ -895,31 +796,18 @@
             return /^\d+$/.test(id) && lokasi !== '' && prov !== '';
           });
 
-          // Pengecekan ID dobel (muncul di Console kalau ada)
           const ids = rows.map(r => r[0]);
           const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
           if (dupes.length) console.warn('ID dobel terdeteksi:', dupes);
 
           const totalCount = rows.length;
-
           document.getElementById('oilSpillTotalNum').innerText = totalCount;
+          document.getElementById('cntOil').innerText = totalCount;
           document.getElementById('oilSpillBoxTitle').innerText = `Total Kejadian Oil Spill ${totalCount}`;
 
           rows.forEach((row, idx) => {
-            /* 
-               PEMETAAN KOLOM SPREADSHEET:
-               A (0) -> ID (Angka)
-               B (1) -> Lokasi
-               C (2) -> Provinsi
-               D (3) -> Tanggal Kejadian
-               E (4) -> LATITUDE  (-6,964725)
-               F (5) -> LONGITUDE (114,177406)
-               G (6) -> Lat, Lon
-               H (7) -> Penyebab
-               I (8) -> Jenis Tumpahan
-               J (9) -> Besaran Pencemar
-               K (10)-> Tindak Lanjut
-            */
+            /* A ID | B Lokasi | C Provinsi | D Tanggal | E Lat | F Lon | G Lat,Lon
+               H Penyebab | I Jenis | J Besaran | K Tindak Lanjut */
             const loc = row[1] || '-';
             const prov = row[2] || '-';
             const dateStr = row[3] || '-';
@@ -928,30 +816,19 @@
             const est = row[9] || '-';
             const action = row[10] || '-';
 
-            // Ekstrak Tahun 4 digit
             const yearMatch = dateStr.match(/\d{4}/);
             const year = yearMatch ? yearMatch[0] : dateStr;
 
-            // Koordinat Latitude & Longitude
-            let rawLat = row[4] ? row[4].replace(',', '.') : '';
-            let rawLng = row[5] ? row[5].replace(',', '.') : '';
-            
-            const lat = parseFloat(rawLat);
-            const lng = parseFloat(rawLng);
+            const lat = parseFloat(row[4] ? row[4].replace(',', '.') : '');
+            const lng = parseFloat(row[5] ? row[5].replace(',', '.') : '');
 
-            // Styling warna jenis tumpahan pada tabel
             let typeClass = 'type-cyan';
             const lowerType = type.toLowerCase();
-            if (lowerType.includes('solar') || lowerType.includes('hsd')) {
-              typeClass = 'type-yellow';
-            } else if (lowerType.includes('residue') || lowerType.includes('fo') || lowerType.includes('residu')) {
-              typeClass = 'type-red';
-            }
+            if (lowerType.includes('solar') || lowerType.includes('hsd')) typeClass = 'type-yellow';
+            else if (lowerType.includes('residue') || lowerType.includes('fo') || lowerType.includes('residu')) typeClass = 'type-red';
 
-            // Formatting Besaran Pencemar Merah di Tabel jika "tidak ditemukan"
             const estTableFormatted = est.toLowerCase().includes('tidak ditemukan') ? `<span class="text-missing">${est}</span>` : est;
 
-            // Render Baris Tabel
             const tr = document.createElement('tr');
             tr.innerHTML = `
               <td>${prov}</td>
@@ -962,7 +839,6 @@
             `;
             tbody.appendChild(tr);
 
-            // Plot Marker di Leaflet Map jika koordinat valid
             if (!isNaN(lat) && !isNaN(lng)) {
               addOilSpillMarker(lat, lng, idx + 1, loc, prov, dateStr, cause, type, est, action);
               allBounds.push([lat, lng]);
@@ -973,10 +849,153 @@
         }
       } catch (err) {
         console.error('Gagal mengambil data CSV:', err);
+        document.getElementById('cntOil').innerText = 'gagal';
       }
     }
 
-    // --- 5. EXECUTE ALL SCRIPTS ---
+    // =====================================================
+    // 4. MANGROVE (tab "RAW DATA")
+    // =====================================================
+    const normHeader = h => (h || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    function parseNum(v) {
+      let s = (v || '').toString().replace(/\s/g, '');
+      if (!s) return NaN;
+      if (s.includes(',') && !s.includes('.')) s = s.replace(',', '.'); // desimal pakai koma
+      else s = s.replace(/,/g, '');                                     // koma = pemisah ribuan
+      return parseFloat(s);
+    }
+
+    const fmtID = (n, d = 1) =>
+      n.toLocaleString('id-ID', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+    async function loadMangroveData() {
+      try {
+        const res = await fetch(mangroveCsvUrl);
+        const data = parseCSV(await res.text());
+
+        // cari baris header lewat kolom Status_Kegiatan
+        const hi = data.findIndex(r => r.some(c => normHeader(c) === 'statuskegiatan'));
+        if (hi < 0) {
+          console.error('Header Status_Kegiatan tidak ditemukan. Pastikan link CSV mengarah ke tab RAW DATA (cek gid).');
+          document.getElementById('mgTableBody').innerHTML =
+            '<tr><td colspan="4" style="text-align:center; color:#f87171;">Data tidak terbaca (cek gid)</td></tr>';
+          return;
+        }
+
+        const H = data[hi].map(normHeader);
+        const col = n => H.indexOf(n);
+        const c = {
+          name: col('name'), prov: col('provinsi'), kab: col('kabkota'),
+          kec: col('kecamatan'), desa: col('desa'), jenis: col('jenis'),
+          luas: col('luaspolyg'), per: col('perusahaan'), penanam: col('penanam'),
+          tahun: col('tahun'), lng: col('long'), lat: col('lat'),
+          bibit: col('jumlahbib'), status: col('statuskegiatan')
+        };
+        const g = (r, i) => (i >= 0 ? (r[i] || '').trim() : '');
+
+        const items = data.slice(hi + 1)
+          .filter(r => g(r, c.status) !== '')
+          .map(r => {
+            const status = g(r, c.status);
+            return {
+              name: g(r, c.name) || ((g(r, c.desa) || g(r, c.kec)) + ', ' + g(r, c.kab)), prov: g(r, c.prov), kab: g(r, c.kab),
+              kec: g(r, c.kec), desa: g(r, c.desa), jenis: g(r, c.jenis),
+              per: g(r, c.per), penanam: g(r, c.penanam), tahun: g(r, c.tahun),
+              luas: parseNum(g(r, c.luas)) || 0,
+              bibit: parseInt(g(r, c.bibit).replace(/[^0-9]/g, ''), 10) || 0,
+              lat: parseNum(g(r, c.lat)), lng: parseNum(g(r, c.lng)),
+              status,
+              isReal: status.toLowerCase().includes('terealisasi')
+            };
+          });
+
+        const unknown = [...new Set(items.map(i => i.status))].filter(s => !/terealisasi|rencana/i.test(s));
+        if (unknown.length) console.warn('Status tidak dikenali (dianggap perencanaan):', unknown);
+
+        const real = items.filter(i => i.isReal);
+        const plan = items.filter(i => !i.isReal);
+        const sum = (arr, k) => arr.reduce((a, b) => a + b[k], 0);
+
+        // Kartu statistik
+        document.getElementById('mgRealHa').innerText = fmtID(sum(real, 'luas'), 1) + ' ha';
+        document.getElementById('mgRealLoc').innerText = real.length + ' lokasi penanaman';
+        document.getElementById('mgTrees').innerText = fmtID(sum(real, 'bibit'), 0);
+        document.getElementById('mgPlanHa').innerText = fmtID(sum(plan, 'luas'), 1) + ' ha';
+        document.getElementById('mgPlanLoc').innerText =
+          plan.length + ' lokasi · ' + plan.filter(i => !isNaN(i.lat) && !isNaN(i.lng)).length + ' tampil di peta';
+
+        // Tabel top 3 (agregat per Kab/Kota, hanya terealisasi)
+        const agg = {};
+        real.forEach(i => {
+          const k = i.kab + '|' + i.prov;
+          agg[k] = agg[k] || { kab: i.kab, prov: i.prov, luas: 0, bibit: 0 };
+          agg[k].luas += i.luas;
+          agg[k].bibit += i.bibit;
+        });
+        const top = Object.values(agg).sort((a, b) => b.luas - a.luas).slice(0, 3);
+        document.getElementById('mgTableBody').innerHTML = top.length
+          ? top.map(t => `
+              <tr>
+                <td>${t.kab}</td><td>${t.prov}</td>
+                <td>${fmtID(t.luas, 1)} ha</td>
+                <td style="font-weight:700;">${fmtID(t.bibit, 0)}</td>
+              </tr>`).join('')
+          : '<tr><td colspan="4" style="text-align:center; color:#94a3b8;">Belum ada data terealisasi</td></tr>';
+
+        // Marker peta
+        mangroveRealGroup.clearLayers();
+        mangrovePlanGroup.clearLayers();
+        mangroveBounds = [];
+        let plotReal = 0, plotPlan = 0;
+        items.forEach(i => {
+          if (isNaN(i.lat) || isNaN(i.lng)) return;
+          const color = i.isReal ? '#22c55e' : '#facc15';
+          const label = i.isReal ? 'Terealisasi' : 'Dalam Perencanaan';
+          const tone = i.isReal ? '#15803d' : '#a16207';
+
+          const m = L.marker([i.lat, i.lng], {
+            icon: L.divIcon({
+              className: '',
+              html: pillHTML(i.isReal ? PILL.real : PILL.plan, leafSVG, fmtID(i.luas, i.luas >= 10 ? 0 : 1)),
+              iconSize: [60, 24], iconAnchor: [30, 12], popupAnchor: [0, -12]
+            }),
+            zIndexOffset: 1000
+          });
+          m.bindPopup(`
+            <div style="color:#0f172a; font-family:'Inter', sans-serif; font-size:12px; line-height:1.5; min-width:280px;">
+              <strong style="color:${tone}; font-size:13px; display:block; margin-bottom:8px;">🌿 ${i.name}</strong>
+              <div style="display:grid; grid-template-columns:110px 10px 1fr; gap:4px 0;">
+                <span style="font-weight:700;">Status</span><span>:</span><span style="font-weight:700; color:${tone};">${label}</span>
+                <span style="font-weight:700;">Provinsi</span><span>:</span><span>${i.prov}</span>
+                <span style="font-weight:700;">Kab/Kota</span><span>:</span><span>${i.kab}</span>
+                <span style="font-weight:700;">Kec / Desa</span><span>:</span><span>${i.kec || '-'} / ${i.desa || '-'}</span>
+                <span style="font-weight:700;">Jenis</span><span>:</span><span>${i.jenis || '-'}</span>
+                <span style="font-weight:700;">Luas</span><span>:</span><span>${fmtID(i.luas, 2)} ha</span>
+                <span style="font-weight:700;">Jumlah Bibit</span><span>:</span><span>${i.bibit ? fmtID(i.bibit, 0) : '-'}</span>
+                <span style="font-weight:700;">Tahun</span><span>:</span><span>${i.tahun || '-'}</span>
+                <span style="font-weight:700;">Perusahaan</span><span>:</span><span>${i.per || '-'}</span>
+                <span style="font-weight:700;">Penanam</span><span>:</span><span>${i.penanam || '-'}</span>
+              </div>
+            </div>`);
+          m.addTo(i.isReal ? mangroveRealGroup : mangrovePlanGroup);
+          mangroveBounds.push([i.lat, i.lng]);
+          if (i.isReal) plotReal++; else plotPlan++;
+        });
+
+        document.getElementById('cntMgReal').innerText = plotReal + (plotReal === real.length ? '' : ' / ' + real.length);
+        document.getElementById('cntMgPlan').innerText = plotPlan + (plotPlan === plan.length ? '' : ' / ' + plan.length);
+
+        fitAll();
+      } catch (err) {
+        console.error('Gagal mengambil data mangrove:', err);
+        ['cntMgReal', 'cntMgPlan'].forEach(id => { const e = document.getElementById(id); if (e) e.innerText = 'gagal'; });
+      }
+    }
+
+    // =====================================================
+    // 5. JALANKAN SEMUA
+    // =====================================================
     window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
 
@@ -992,11 +1011,7 @@
             cutout: '75%'
           }]
         },
-        options: {
-          plugins: { legend: { display: false } },
-          responsive: true,
-          maintainAspectRatio: false
-        }
+        options: { plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
       });
 
       const carouselTrack = document.getElementById('carouselTrack');
@@ -1010,7 +1025,9 @@
         });
       }
 
+      refreshLayerUI();
       loadOilSpillData();
+      loadMangroveData();
     });
   </script>
 </body>
