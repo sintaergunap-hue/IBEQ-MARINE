@@ -146,29 +146,22 @@
     .sat-label { position: absolute; right: 14px; bottom: 6px; z-index: 1000; font-size: 12px; color: #fff; text-shadow: 0 0 4px #000; }
 
     .layer-modal {
-      position: absolute; top: 20px; left: 100px; z-index: 1001; width: 300px;
+      position: absolute; top: 20px; left: 100px; z-index: 1001; width: 330px;
       background-color: rgba(6,24,34,.96); border: 1px solid #0d4b5c; border-radius: 10px;
       padding: 12px; color: #fff; box-shadow: 0 10px 25px rgba(0,0,0,.5); display: none; max-height: 390px; overflow-y: auto;
     }
     .layer-modal.show { display: block; }
     .layer-modal-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 700; margin-bottom: 10px; }
-    .btn-hide-layers {
-      width: 100%; background-color: #031821; border: 1px solid #0ea5e9; color: #38bdf8;
-      padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; margin-bottom: 8px;
-    }
-    .layer-legend-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-    .legend-badge { display: flex; align-items: center; gap: 5px; font-size: 11px; padding: 3px 9px; border-radius: 10px; background-color: #02141c; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; }
     .layer-check-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
     .layer-check {
       display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;
       padding: 7px 9px; border-radius: 8px; background: #02141c; border: 1px solid #0d3a4a;
     }
     .layer-check input { accent-color: #22c55e; width: 15px; height: 15px; cursor: pointer; }
-    .layer-check .dot { width: 11px; height: 11px; }
+    .layer-check .dot { width: 11px; height: 11px; border-radius: 50%; }
     .layer-check .cnt { margin-left: auto; color: #9fb3c0; font-size: 11px; }
 
-    /* ===== Pill marker & legend (satu gaya untuk semua layer) ===== */
+    /* Pill marker & legend */
     .pill-mk {
       display: inline-flex; align-items: center; gap: 3px; width: 60px; height: 24px; padding: 2px 3px;
       border-radius: 14px; border: 1.5px solid rgba(255,255,255,.92); box-shadow: 0 2px 6px rgba(0,0,0,.6);
@@ -190,19 +183,15 @@
       width: 100%; background-color: #031821; border: 1px solid #0ea5e9; color: #38bdf8;
       padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
     }
-    #legendPanel { left: 412px; width: 270px; }
-    .legend-row { display: flex; align-items: center; gap: 12px; padding: 9px 2px; font-size: 13px; line-height: 1.3; border-bottom: 1px solid #0d2a36; }
+    #legendPanel { left: 442px; width: 310px; }
+    .legend-row { display: flex; align-items: center; gap: 12px; padding: 8px 2px; font-size: 12px; line-height: 1.3; border-bottom: 1px solid #0d2a36; }
     .legend-row:last-child { border-bottom: none; }
     .legend-row .pill-mk { width: 64px; height: 26px; cursor: default; }
     .legend-row small { display: block; color: #9fb3c0; font-size: 11px; }
-    .oil-pill {
-      display: inline-flex; align-items: center; gap: 6px; background: #ef4444; border: 1px solid #7f1d1d;
-      border-radius: 20px; padding: 2px 12px 2px 2px; color: #fff; font-weight: 700; font-size: 15px;
-      box-shadow: 0 2px 6px rgba(0,0,0,.6); white-space: nowrap;
-    }
-    .oil-pill .ic {
-      width: 26px; height: 26px; border-radius: 50%; background: #b91c1c; border: 2px solid #fff;
-      display: flex; align-items: center; justify-content: center;
+
+    /* Legenda Garis/Polygon */
+    .poly-line-icon {
+      width: 32px; height: 16px; display: inline-block; border-radius: 4px; border: 2px solid; flex-shrink: 0;
     }
 
     /* BOTTOM CAROUSEL */
@@ -376,6 +365,7 @@
 
           <div class="sat-label">Satellite Hybrid</div>
 
+          <!-- LAYER MANAGEMENT MODAL -->
           <div class="layer-modal show" id="layerModal">
             <div class="layer-modal-header">
               <span style="font-size:16px; font-weight:600;">Layer Management</span>
@@ -384,33 +374,108 @@
             <div class="panel-divider"></div>
 
             <div class="filter-row" onclick="toggleFilter()">
-              <span>Filter</span>
+              <span>Filter Layer Peta</span>
               <span id="filterChev"><i data-lucide="chevron-up" width="18"></i></span>
             </div>
             <div id="filterBody" class="layer-check-list">
-              <label class="layer-check"><input type="checkbox" id="chkOil" checked onchange="setLayer('oil', this.checked)"><span class="dot" style="background:#ef4444;"></span><span>Oil Spill</span><span class="cnt" id="cntOil">...</span></label>
-              <label class="layer-check"><input type="checkbox" id="chkMgReal" checked onchange="setLayer('mgReal', this.checked)"><span class="dot" style="background:#22c55e;"></span><span>Mangrove Terealisasi</span><span class="cnt" id="cntMgReal">...</span></label>
-              <label class="layer-check"><input type="checkbox" id="chkMgPlan" checked onchange="setLayer('mgPlan', this.checked)"><span class="dot" style="background:#facc15;"></span><span>Mangrove Dalam Perencanaan</span><span class="cnt" id="cntMgPlan">...</span></label>
+              <label class="layer-check">
+                <input type="checkbox" id="chkOil" checked onchange="setLayer('oil', this.checked)">
+                <span class="dot" style="background:#ef4444;"></span><span>Oil Spill (Titik)</span>
+                <span class="cnt" id="cntOil">...</span>
+              </label>
+
+              <label class="layer-check">
+                <input type="checkbox" id="chkMgReal" checked onchange="setLayer('mgReal', this.checked)">
+                <span class="dot" style="background:#22c55e;"></span><span>Mangrove Terealisasi (Titik)</span>
+                <span class="cnt" id="cntMgReal">...</span>
+              </label>
+
+              <label class="layer-check">
+                <input type="checkbox" id="chkMgPlan" checked onchange="setLayer('mgPlan', this.checked)">
+                <span class="dot" style="background:#facc15;"></span><span>Mangrove Perencanaan (Titik)</span>
+                <span class="cnt" id="cntMgPlan">...</span>
+              </label>
+
+              <div class="panel-divider"></div>
+
+              <!-- LAYER POLYGON MANGROVE & PERUNTUKKAN -->
+              <label class="layer-check">
+                <input type="checkbox" id="chkPolyPtfi" checked onchange="setLayer('polyPtfi', this.checked)">
+                <span class="poly-line-icon" style="border-color:#22c55e; background:rgba(34,197,94,0.3);"></span>
+                <span>Polygon Mangrove</span>
+                <span class="cnt" id="cntPolyPtfi">...</span>
+              </label>
+
+              <label class="layer-check">
+                <input type="checkbox" id="chkPolyLebat" onchange="setLayer('polyLebat', this.checked)">
+                <span class="poly-line-icon" style="border-color:#9333ea; background:rgba(147,51,234,0.3);"></span>
+                <span>Polygon Peruntukkan Mangrove Lebat</span>
+                <span class="cnt" id="cntPolyLebat">...</span>
+              </label>
+
+              <label class="layer-check">
+                <input type="checkbox" id="chkPolySedang" onchange="setLayer('polySedang', this.checked)">
+                <span class="poly-line-icon" style="border-color:#0284c7; background:rgba(2,132,199,0.3);"></span>
+                <span>Polygon Peruntukkan Mangrove Sedang</span>
+                <span class="cnt" id="cntPolySedang">...</span>
+              </label>
+
+              <label class="layer-check">
+                <input type="checkbox" id="chkPolyJarang" onchange="setLayer('polyJarang', this.checked)">
+                <span class="poly-line-icon" style="border-color:#f97316; background:rgba(249,115,22,0.3);"></span>
+                <span>Polygon Peruntukkan Mangrove Jarang</span>
+                <span class="cnt" id="cntPolyJarang">...</span>
+              </label>
             </div>
             <button class="btn-hide-all" id="hideAllBtn" onclick="toggleAllLayers()">Hide All Layers</button>
           </div>
 
+          <!-- LEGEND PANEL -->
           <div class="layer-modal show" id="legendPanel">
             <div class="layer-modal-header"><span style="font-size:16px; font-weight:600;">Legend</span></div>
             <div class="panel-divider"></div>
+            
             <div class="legend-row" id="legOil">
               <span class="pill-mk" style="background:#ef4444;"><span class="pi"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.5s6.5 7 6.5 11.5a6.5 6.5 0 0 1-13 0C5.5 9.5 12 2.5 12 2.5z"/></svg></span><span class="pc" style="background:#7f1d1d;"></span></span>
               <span>Oil Spill<small>angka = no. kejadian</small></span>
             </div>
+
             <div class="legend-row" id="legMgReal">
               <span class="pill-mk" style="background:#22c55e;"><span class="pi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span><span class="pc" style="background:#14532d;"></span></span>
-              <span>Mangrove Terealisasi<small>angka = luas (ha)</small></span>
+              <span>Mangrove Realisasi<small>angka = luas (ha)</small></span>
             </div>
+
             <div class="legend-row" id="legMgPlan">
               <span class="pill-mk" style="background:#facc15;"><span class="pi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span><span class="pc" style="background:#5c4a06;"></span></span>
-              <span>Mangrove Dalam Perencanaan<small>angka = luas (ha)</small></span>
+              <span>Mangrove Rencana<small>angka = luas (ha)</small></span>
+            </div>
+
+            <div class="legend-row" id="legPolyPtfi">
+              <span class="poly-line-icon" style="border-color:#22c55e; border-style:solid; background:rgba(34,197,94,0.3);"></span>
+              <span>Polygon Mangrove Realisasi<small>Garis Hijau Solid</small></span>
+            </div>
+
+            <div class="legend-row" id="legPolyPtfiPlan">
+              <span class="poly-line-icon" style="border-color:#facc15; border-style:dashed; background:rgba(250,204,21,0.3);"></span>
+              <span>Polygon Mangrove Perencanaan<small>Garis Kuning Putus-Putus</small></span>
+            </div>
+
+            <div class="legend-row" id="legPolyLebat">
+              <span class="poly-line-icon" style="border-color:#9333ea; background:rgba(147,51,234,0.4);"></span>
+              <span>Peruntukkan Lebat<small>Area Mangrove Lebat</small></span>
+            </div>
+
+            <div class="legend-row" id="legPolySedang">
+              <span class="poly-line-icon" style="border-color:#0284c7; background:rgba(2,132,199,0.4);"></span>
+              <span>Peruntukkan Sedang<small>Area Mangrove Sedang</small></span>
+            </div>
+
+            <div class="legend-row" id="legPolyJarang">
+              <span class="poly-line-icon" style="border-color:#f97316; background:rgba(249,115,22,0.4);"></span>
+              <span>Peruntukkan Jarang<small>Area Mangrove Jarang</small></span>
             </div>
           </div>
+
         </div>
       </section>
 
@@ -486,7 +551,6 @@
                     </div>
                   </div>
 
-                  <!-- RATE CARD DALAM PERENCANAAN -->
                   <div class="stat-box" style="border-color:#facc15;">
                     <div class="stat-label" style="display:flex; justify-content:space-between;">
                       <span>Dalam Perencanaan</span><span style="color:#facc15;">● Kuning di peta</span>
@@ -574,14 +638,19 @@
     // =====================================================
     // KONFIGURASI SUMBER DATA
     // =====================================================
-    // Oil spill: tab "Oil Spill (2)"
     const csvUrl = 'https://docs.google.com/spreadsheets/d/1VZb_j_iaMJXRX56AFjVvUyJLQSEW1vx23dwgG3-4a0U/gviz/tq?tqx=out:csv&gid=296430431';
-
-    // Mangrove: tab "RAW DATA"  --> GANTI ISI_GID dengan angka gid tab RAW DATA
     const mangroveCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSY5Ix-OMMx9U4uLhV4PHkBUN7OVijzUFmWjEI09btjgAv8pIV087SachUM1Vk_SW6_7WyTYMd2-UVo/pub?gid=1462568354&single=true&output=csv';
 
+    // GeoJSON URLs
+    const geojsonPtfiUrl = 'https://raw.githubusercontent.com/sintaergunap-hue/Dashboard-Penanaman-Mangrove-Nasional/main/PTFI_ALL_MANGROVE.json';
+    
+    // URL Peruntukkan Mangrove berdasarkan folder di GitHub
+    const geojsonLebatUrl = 'https://raw.githubusercontent.com/sintaergunap-hue/Dashboard-Penanaman-Mangrove-Nasional/main/Mangrove%20Lebat/KTTJ_MANGROVELEBAT_2_ACEH.js';
+    const geojsonSedangUrl = 'https://raw.githubusercontent.com/sintaergunap-hue/Dashboard-Penanaman-Mangrove-Nasional/main/Mangrove%20Sedang/KTTJ_MANGROVESEDANG_3_ACEH.js';
+    const geojsonJarangUrl = 'https://raw.githubusercontent.com/sintaergunap-hue/Dashboard-Penanaman-Mangrove-Nasional/main/Mangrove%20Jarang/KTTJ_MANGROVEJARANG_4_ACEH.js';
+
     // =====================================================
-    // 1. INISIALISASI PETA
+    // 1. INISIALISASI PETA & LAYER GROUPS
     // =====================================================
     const map = L.map('leaflet-map', {
       center: [-2.5489, 118.0149], zoom: 5, zoomControl: false, attributionControl: false,
@@ -591,28 +660,61 @@
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }).addTo(map);
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }).addTo(map);
 
+    // Marker Layer Groups
     const oilSpillLayerGroup = L.layerGroup().addTo(map);
     const mangroveRealGroup = L.layerGroup().addTo(map);
     const mangrovePlanGroup = L.layerGroup().addTo(map);
-    const layerGroups = { oil: oilSpillLayerGroup, mgReal: mangroveRealGroup, mgPlan: mangrovePlanGroup };
-    const layerChecks = { oil: 'chkOil', mgReal: 'chkMgReal', mgPlan: 'chkMgPlan' };
-    let allBounds = [];        // oil spill
-    let mangroveBounds = [];   // mangrove
+
+    // Polygon Layer Groups
+    const polyPtfiGroup = L.layerGroup().addTo(map);
+    const polyLebatGroup = L.layerGroup();
+    const polySedangGroup = L.layerGroup();
+    const polyJarangGroup = L.layerGroup();
+
+    const layerGroups = {
+      oil: oilSpillLayerGroup,
+      mgReal: mangroveRealGroup,
+      mgPlan: mangrovePlanGroup,
+      polyPtfi: polyPtfiGroup,
+      polyLebat: polyLebatGroup,
+      polySedang: polySedangGroup,
+      polyJarang: polyJarangGroup
+    };
+
+    const layerChecks = {
+      oil: 'chkOil',
+      mgReal: 'chkMgReal',
+      mgPlan: 'chkMgPlan',
+      polyPtfi: 'chkPolyPtfi',
+      polyLebat: 'chkPolyLebat',
+      polySedang: 'chkPolySedang',
+      polyJarang: 'chkPolyJarang'
+    };
+
+    const legendRows = {
+      oil: 'legOil',
+      mgReal: 'legMgReal',
+      mgPlan: 'legMgPlan',
+      polyPtfi: 'legPolyPtfi',
+      polyLebat: 'legPolyLebat',
+      polySedang: 'legPolySedang',
+      polyJarang: 'legPolyJarang'
+    };
+
+    let allBounds = [];
+    let mangroveBounds = [];
+    let polygonBounds = [];
+    const loadedLayers = {};
 
     map.on('zoomend', () => { document.getElementById('zoomVal').innerText = map.getZoom().toFixed(2); });
 
     ['mapLeftBtns', 'mapLeftBottom', 'mapTopRight', 'mapBottomBar', 'layerModal', 'legendPanel'].forEach(id => {
       const el = document.getElementById(id);
-      L.DomEvent.disableClickPropagation(el);
-      L.DomEvent.disableScrollPropagation(el);
+      if(el) {
+        L.DomEvent.disableClickPropagation(el);
+        L.DomEvent.disableScrollPropagation(el);
+      }
     });
-
-    function toggleOilSpillLayers() {
-      if (map.hasLayer(oilSpillLayerGroup)) map.removeLayer(oilSpillLayerGroup);
-      else map.addLayer(oilSpillLayerGroup);
-    }
-
-    const legendRows = { oil: 'legOil', mgReal: 'legMgReal', mgPlan: 'legMgPlan' };
 
     function refreshLayerUI() {
       let anyOn = false;
@@ -620,32 +722,56 @@
         const on = map.hasLayer(layerGroups[k]);
         anyOn = anyOn || on;
         const row = document.getElementById(legendRows[k]);
-        if (row) row.style.display = on ? 'flex' : 'none';   // legenda hanya untuk layer yang aktif
+        if (row) row.style.display = on ? 'flex' : 'none';
         const chk = document.getElementById(layerChecks[k]);
         if (chk) chk.checked = on;
       });
-      document.getElementById('hideAllBtn').innerText = anyOn ? 'Hide All Layers' : 'Show All Layers';
+      const btn = document.getElementById('hideAllBtn');
+      if (btn) btn.innerText = anyOn ? 'Hide All Layers' : 'Show All Layers';
     }
 
-    function setLayer(key, on) {
+    async function setLayer(key, on) {
       const g = layerGroups[key];
-      if (on) map.addLayer(g); else map.removeLayer(g);
+      if (on) {
+        if (!loadedLayers[key]) {
+          await triggerLazyLoad(key);
+        }
+        map.addLayer(g);
+      } else {
+        map.removeLayer(g);
+      }
       refreshLayerUI();
+    }
+
+    async function triggerLazyLoad(key) {
+      if (key === 'polyLebat') {
+        await loadGeoJsonPolygon(geojsonLebatUrl, polyLebatGroup, () => ({
+          color: '#c084fc', weight: 1.5, fillColor: '#9333ea', fillOpacity: 0.55
+        }), 'cntPolyLebat', 'Polygon Peruntukkan Mangrove Lebat');
+      } else if (key === 'polySedang') {
+        await loadGeoJsonPolygon(geojsonSedangUrl, polySedangGroup, () => ({
+          color: '#38bdf8', weight: 1.5, fillColor: '#0284c7', fillOpacity: 0.55
+        }), 'cntPolySedang', 'Polygon Peruntukkan Mangrove Sedang');
+      } else if (key === 'polyJarang') {
+        await loadGeoJsonPolygon(geojsonJarangUrl, polyJarangGroup, () => ({
+          color: '#fb923c', weight: 1.5, fillColor: '#f97316', fillOpacity: 0.55
+        }), 'cntPolyJarang', 'Polygon Peruntukkan Mangrove Jarang');
+      }
+      loadedLayers[key] = true;
     }
 
     function toggleAllLayers() {
       const anyOn = Object.values(layerGroups).some(g => map.hasLayer(g));
       Object.keys(layerGroups).forEach(k => {
-        const g = layerGroups[k];
-        if (anyOn) map.removeLayer(g); else map.addLayer(g);
+        setLayer(k, !anyOn);
       });
-      refreshLayerUI();
     }
 
     function toggleLayerPanel() {
       document.getElementById('layerModal').classList.toggle('show');
       document.getElementById('legendPanel').classList.toggle('show');
     }
+
     function toggleFilter() {
       const b = document.getElementById('filterBody');
       const hidden = b.style.display === 'none';
@@ -654,14 +780,11 @@
     }
 
     function fitAll() {
-      const all = allBounds.concat(mangroveBounds);
-      // zoom hanya mempertimbangkan titik di wilayah Indonesia (abaikan koordinat nyasar)
+      const all = allBounds.concat(mangroveBounds).concat(polygonBounds);
       const inRange = p => p[0] > -12 && p[0] < 8 && p[1] > 94 && p[1] < 142;
-      const out = all.filter(p => !inRange(p));
-      if (out.length) console.warn('Titik di luar wilayah Indonesia (cek koordinat di spreadsheet):', out);
       let b = all.filter(inRange);
       if (!b.length) b = all;
-      if (b.length) map.fitBounds(b, { padding: [60, 60], maxZoom: 8 });
+      if (b.length) map.fitBounds(b, { padding: [60, 60], maxZoom: 10 });
     }
 
     function toggleFullscreen() {
@@ -671,17 +794,11 @@
     }
     document.addEventListener('fullscreenchange', () => setTimeout(() => map.invalidateSize(), 200));
 
-    function scrollIKAL(amount) {
-      const el = document.getElementById('ikalScrollContainer');
-      if (el) el.scrollTop += amount;
-    }
-
     function scrollCarousel(amount) {
       const el = document.getElementById('carouselTrack');
       if (el) el.scrollBy({ left: amount, behavior: 'smooth' });
     }
 
-    // Jam WIB
     function updateClock() {
       const now = new Date();
       const d = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', day: '2-digit', month: '2-digit', year: 'numeric' }).format(now);
@@ -692,7 +809,7 @@
     setInterval(updateClock, 30000);
 
     // =====================================================
-    // 2. CSV PARSER (aman untuk sel berisi Enter, koma, kutip)
+    // 2. CSV PARSER
     // =====================================================
     function parseCSV(text) {
       const rows = [];
@@ -729,10 +846,9 @@
     }
 
     // =====================================================
-    // 3. OIL SPILL
+    // 3. OIL SPILL DATA
     // =====================================================
     const dropletSVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.5s6.5 7 6.5 11.5a6.5 6.5 0 0 1-13 0C5.5 9.5 12 2.5 12 2.5z"/></svg>';
-
     const leafSVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>';
     const PILL = {
       oil:  { c: '#ef4444', d: '#7f1d1d' },
@@ -743,41 +859,8 @@
       return `<div class="pill-mk" style="background:${pal.c};"><span class="pi">${iconSVG}</span><span class="pc" style="background:${pal.d};">${text}</span></div>`;
     }
 
-    function addOilSpillMarker(lat, lng, no, loc, prov, date, cause, type, est, action) {
-      const icon = L.divIcon({
-        className: '',
-        html: pillHTML(PILL.oil, dropletSVG, no),
-        iconSize: [60, 24],
-        iconAnchor: [30, 12],
-        popupAnchor: [0, -12]
-      });
-      const marker = L.marker([lat, lng], { icon });
-
-      const isEstMissing = est.toLowerCase().includes('tidak ditemukan');
-      const estFormatted = isEstMissing ? `<span class="text-missing">${est}</span>` : est;
-
-      marker.bindPopup(`
-        <div style="color:#0f172a; font-family:'Inter', sans-serif; font-size:12px; line-height:1.5; min-width:300px;">
-          <strong style="color:#dc2626; font-size:13px; display:block; margin-bottom:8px;">⚠️ Kejadian Oil Spill</strong>
-          <div style="display:grid; grid-template-columns:120px 10px 1fr; gap:4px 0; align-items:start;">
-            <span style="font-weight:700;">Provinsi</span><span>:</span><span>${prov}</span>
-            <span style="font-weight:700;">Lokasi</span><span>:</span><span>${loc}</span>
-            <span style="font-weight:700;">Titik Koordinat</span><span>:</span><span>${lat}, ${lng}</span>
-            <span style="font-weight:700;">Tanggal Kejadian</span><span>:</span><span>${date}</span>
-            <span style="font-weight:700;">Jenis Tumpahan</span><span>:</span><span style="color:#0284c7; font-weight:700;">${type}</span>
-            <span style="font-weight:700;">Besaran Pencemar</span><span>:</span><span>${estFormatted}</span>
-            <span style="font-weight:700;">Penyebab</span><span>:</span><span>${cause}</span>
-            <span style="font-weight:700;">Tindak Lanjut</span><span>:</span><span>${action}</span>
-          </div>
-        </div>
-      `);
-
-      marker.addTo(oilSpillLayerGroup);
-    }
-
     async function loadOilSpillData() {
       const tbody = document.getElementById('oilSpillTableBody');
-
       try {
         const response = await fetch(csvUrl);
         const csvText = await response.text();
@@ -796,18 +879,12 @@
             return /^\d+$/.test(id) && lokasi !== '' && prov !== '';
           });
 
-          const ids = rows.map(r => r[0]);
-          const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
-          if (dupes.length) console.warn('ID dobel terdeteksi:', dupes);
-
           const totalCount = rows.length;
           document.getElementById('oilSpillTotalNum').innerText = totalCount;
           document.getElementById('cntOil').innerText = totalCount;
           document.getElementById('oilSpillBoxTitle').innerText = `Total Kejadian Oil Spill ${totalCount}`;
 
           rows.forEach((row, idx) => {
-            /* A ID | B Lokasi | C Provinsi | D Tanggal | E Lat | F Lon | G Lat,Lon
-               H Penyebab | I Jenis | J Besaran | K Tindak Lanjut */
             const loc = row[1] || '-';
             const prov = row[2] || '-';
             const dateStr = row[3] || '-';
@@ -840,48 +917,49 @@
             tbody.appendChild(tr);
 
             if (!isNaN(lat) && !isNaN(lng)) {
-              addOilSpillMarker(lat, lng, idx + 1, loc, prov, dateStr, cause, type, est, action);
+              const icon = L.divIcon({
+                className: '',
+                html: pillHTML(PILL.oil, dropletSVG, idx + 1),
+                iconSize: [60, 24], iconAnchor: [30, 12], popupAnchor: [0, -12]
+              });
+              const marker = L.marker([lat, lng], { icon });
+              marker.bindPopup(`
+                <div style="color:#0f172a; font-family:'Inter', sans-serif; font-size:12px; line-height:1.5; min-width:300px;">
+                  <strong style="color:#dc2626; font-size:13px; display:block; margin-bottom:8px;">⚠️ Kejadian Oil Spill</strong>
+                  <div style="display:grid; grid-template-columns:120px 10px 1fr; gap:4px 0; align-items:start;">
+                    <span style="font-weight:700;">Provinsi</span><span>:</span><span>${prov}</span>
+                    <span style="font-weight:700;">Lokasi</span><span>:</span><span>${loc}</span>
+                    <span style="font-weight:700;">Titik Koordinat</span><span>:</span><span>${lat}, ${lng}</span>
+                    <span style="font-weight:700;">Tanggal Kejadian</span><span>:</span><span>${dateStr}</span>
+                    <span style="font-weight:700;">Jenis Tumpahan</span><span>:</span><span style="color:#0284c7; font-weight:700;">${type}</span>
+                    <span style="font-weight:700;">Besaran Pencemar</span><span>:</span><span>${estTableFormatted}</span>
+                    <span style="font-weight:700;">Penyebab</span><span>:</span><span>${cause}</span>
+                    <span style="font-weight:700;">Tindak Lanjut</span><span>:</span><span>${action}</span>
+                  </div>
+                </div>
+              `);
+              marker.addTo(oilSpillLayerGroup);
               allBounds.push([lat, lng]);
             }
           });
-
-          fitAll();
         }
       } catch (err) {
-        console.error('Gagal mengambil data CSV:', err);
-        document.getElementById('cntOil').innerText = 'gagal';
+        console.error('Gagal mengambil data Oil Spill:', err);
       }
     }
 
     // =====================================================
-    // 4. MANGROVE (tab "RAW DATA")
+    // 4. MANGROVE DATA (PENANAMAN MANGROVE)
     // =====================================================
     const normHeader = h => (h || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-
-    function parseNum(v) {
-      let s = (v || '').toString().replace(/\s/g, '');
-      if (!s) return NaN;
-      if (s.includes(',') && !s.includes('.')) s = s.replace(',', '.'); // desimal pakai koma
-      else s = s.replace(/,/g, '');                                     // koma = pemisah ribuan
-      return parseFloat(s);
-    }
-
-    const fmtID = (n, d = 1) =>
-      n.toLocaleString('id-ID', { minimumFractionDigits: d, maximumFractionDigits: d });
 
     async function loadMangroveData() {
       try {
         const res = await fetch(mangroveCsvUrl);
         const data = parseCSV(await res.text());
 
-        // cari baris header lewat kolom Status_Kegiatan
         const hi = data.findIndex(r => r.some(c => normHeader(c) === 'statuskegiatan'));
-        if (hi < 0) {
-          console.error('Header Status_Kegiatan tidak ditemukan. Pastikan link CSV mengarah ke tab RAW DATA (cek gid).');
-          document.getElementById('mgTableBody').innerHTML =
-            '<tr><td colspan="4" style="text-align:center; color:#f87171;">Data tidak terbaca (cek gid)</td></tr>';
-          return;
-        }
+        if (hi < 0) return;
 
         const H = data[hi].map(normHeader);
         const col = n => H.indexOf(n);
@@ -898,103 +976,166 @@
           .filter(r => g(r, c.status) !== '')
           .map(r => {
             const status = g(r, c.status);
+            const rawLuas = g(r, c.luas);
+            const rawBibit = g(r, c.bibit);
+            const numLuas = parseFloat(rawLuas.replace(',', '.')) || 0;
+            const numBibit = parseInt(rawBibit.replace(/[^0-9]/g, ''), 10) || 0;
+
             return {
               name: g(r, c.name) || ((g(r, c.desa) || g(r, c.kec)) + ', ' + g(r, c.kab)), prov: g(r, c.prov), kab: g(r, c.kab),
               kec: g(r, c.kec), desa: g(r, c.desa), jenis: g(r, c.jenis),
               per: g(r, c.per), penanam: g(r, c.penanam), tahun: g(r, c.tahun),
-              luas: parseNum(g(r, c.luas)) || 0,
-              bibit: parseInt(g(r, c.bibit).replace(/[^0-9]/g, ''), 10) || 0,
-              lat: parseNum(g(r, c.lat)), lng: parseNum(g(r, c.lng)),
-              status,
-              isReal: status.toLowerCase().includes('terealisasi')
+              luasStr: rawLuas || '0', bibitStr: rawBibit || '0',
+              numLuas, numBibit,
+              lat: parseFloat(g(r, c.lat).replace(',', '.')),
+              lng: parseFloat(g(r, c.lng).replace(',', '.')),
+              status, isReal: status.toLowerCase().includes('terealisasi')
             };
           });
 
-        const unknown = [...new Set(items.map(i => i.status))].filter(s => !/terealisasi|rencana/i.test(s));
-        if (unknown.length) console.warn('Status tidak dikenali (dianggap perencanaan):', unknown);
-
         const real = items.filter(i => i.isReal);
         const plan = items.filter(i => !i.isReal);
-        const sum = (arr, k) => arr.reduce((a, b) => a + b[k], 0);
+        const sumLuas = arr => arr.reduce((a, b) => a + b.numLuas, 0);
+        const sumBibit = arr => arr.reduce((a, b) => a + b.numBibit, 0);
 
-        // Kartu statistik
-        document.getElementById('mgRealHa').innerText = fmtID(sum(real, 'luas'), 1) + ' ha';
+        document.getElementById('mgRealHa').innerText = sumLuas(real).toLocaleString('id-ID') + ' ha';
         document.getElementById('mgRealLoc').innerText = real.length + ' lokasi penanaman';
-        document.getElementById('mgTrees').innerText = fmtID(sum(real, 'bibit'), 0);
-        document.getElementById('mgPlanHa').innerText = fmtID(sum(plan, 'luas'), 1) + ' ha';
-        document.getElementById('mgPlanLoc').innerText =
-          plan.length + ' lokasi · ' + plan.filter(i => !isNaN(i.lat) && !isNaN(i.lng)).length + ' tampil di peta';
+        document.getElementById('mgTrees').innerText = sumBibit(real).toLocaleString('id-ID');
+        document.getElementById('mgPlanHa').innerText = sumLuas(plan).toLocaleString('id-ID') + ' ha';
+        document.getElementById('mgPlanLoc').innerText = plan.length + ' lokasi';
 
-        // Tabel top 3 (agregat per Kab/Kota, hanya terealisasi)
+        // Tabel Top
         const agg = {};
         real.forEach(i => {
           const k = i.kab + '|' + i.prov;
           agg[k] = agg[k] || { kab: i.kab, prov: i.prov, luas: 0, bibit: 0 };
-          agg[k].luas += i.luas;
-          agg[k].bibit += i.bibit;
+          agg[k].luas += i.numLuas;
+          agg[k].bibit += i.numBibit;
         });
         const top = Object.values(agg).sort((a, b) => b.luas - a.luas).slice(0, 3);
-        document.getElementById('mgTableBody').innerHTML = top.length
-          ? top.map(t => `
-              <tr>
-                <td>${t.kab}</td><td>${t.prov}</td>
-                <td>${fmtID(t.luas, 1)} ha</td>
-                <td style="font-weight:700;">${fmtID(t.bibit, 0)}</td>
-              </tr>`).join('')
-          : '<tr><td colspan="4" style="text-align:center; color:#94a3b8;">Belum ada data terealisasi</td></tr>';
+        document.getElementById('mgTableBody').innerHTML = top.map(t => `
+          <tr>
+            <td>${t.kab}</td><td>${t.prov}</td>
+            <td>${t.luas.toLocaleString('id-ID')} ha</td>
+            <td style="font-weight:700;">${t.bibit.toLocaleString('id-ID')}</td>
+          </tr>`).join('');
 
-        // Marker peta
+        // Markers & Pop-up
         mangroveRealGroup.clearLayers();
         mangrovePlanGroup.clearLayers();
         mangroveBounds = [];
-        let plotReal = 0, plotPlan = 0;
+
         items.forEach(i => {
           if (isNaN(i.lat) || isNaN(i.lng)) return;
-          const color = i.isReal ? '#22c55e' : '#facc15';
-          const label = i.isReal ? 'Terealisasi' : 'Dalam Perencanaan';
           const tone = i.isReal ? '#15803d' : '#a16207';
+          const label = i.isReal ? 'Terealisasi' : 'Dalam Perencanaan';
 
           const m = L.marker([i.lat, i.lng], {
             icon: L.divIcon({
               className: '',
-              html: pillHTML(i.isReal ? PILL.real : PILL.plan, leafSVG, fmtID(i.luas, i.luas >= 10 ? 0 : 1)),
+              html: pillHTML(i.isReal ? PILL.real : PILL.plan, leafSVG, i.luasStr),
               iconSize: [60, 24], iconAnchor: [30, 12], popupAnchor: [0, -12]
-            }),
-            zIndexOffset: 1000
+            })
           });
+
+          // POP-UP SESUAI SHEETS TANPA PEMBULATAN
           m.bindPopup(`
-            <div style="color:#0f172a; font-family:'Inter', sans-serif; font-size:12px; line-height:1.5; min-width:280px;">
+            <div style="color:#0f172a; font-family:'Inter', sans-serif; font-size:12px; line-height:1.5; min-width:290px;">
               <strong style="color:${tone}; font-size:13px; display:block; margin-bottom:8px;">🌿 ${i.name}</strong>
-              <div style="display:grid; grid-template-columns:110px 10px 1fr; gap:4px 0;">
+              <div style="display:grid; grid-template-columns:110px 10px 1fr; gap:4px 0; align-items:start;">
                 <span style="font-weight:700;">Status</span><span>:</span><span style="font-weight:700; color:${tone};">${label}</span>
                 <span style="font-weight:700;">Provinsi</span><span>:</span><span>${i.prov}</span>
                 <span style="font-weight:700;">Kab/Kota</span><span>:</span><span>${i.kab}</span>
                 <span style="font-weight:700;">Kec / Desa</span><span>:</span><span>${i.kec || '-'} / ${i.desa || '-'}</span>
+                <span style="font-weight:700;">Titik Koordinat</span><span>:</span><span>${i.lat}, ${i.lng}</span>
                 <span style="font-weight:700;">Jenis</span><span>:</span><span>${i.jenis || '-'}</span>
-                <span style="font-weight:700;">Luas</span><span>:</span><span>${fmtID(i.luas, 2)} ha</span>
-                <span style="font-weight:700;">Jumlah Bibit</span><span>:</span><span>${i.bibit ? fmtID(i.bibit, 0) : '-'}</span>
+                <span style="font-weight:700;">Luas</span><span>:</span><span>${i.luasStr} ha</span>
+                <span style="font-weight:700;">Jumlah Bibit</span><span>:</span><span>${i.bibitStr || '-'}</span>
                 <span style="font-weight:700;">Tahun</span><span>:</span><span>${i.tahun || '-'}</span>
                 <span style="font-weight:700;">Perusahaan</span><span>:</span><span>${i.per || '-'}</span>
                 <span style="font-weight:700;">Penanam</span><span>:</span><span>${i.penanam || '-'}</span>
               </div>
-            </div>`);
+            </div>
+          `);
+
           m.addTo(i.isReal ? mangroveRealGroup : mangrovePlanGroup);
           mangroveBounds.push([i.lat, i.lng]);
-          if (i.isReal) plotReal++; else plotPlan++;
         });
 
-        document.getElementById('cntMgReal').innerText = plotReal + (plotReal === real.length ? '' : ' / ' + real.length);
-        document.getElementById('cntMgPlan').innerText = plotPlan + (plotPlan === plan.length ? '' : ' / ' + plan.length);
+        document.getElementById('cntMgReal').innerText = real.length;
+        document.getElementById('cntMgPlan').innerText = plan.length;
 
-        fitAll();
       } catch (err) {
-        console.error('Gagal mengambil data mangrove:', err);
-        ['cntMgReal', 'cntMgPlan'].forEach(id => { const e = document.getElementById(id); if (e) e.innerText = 'gagal'; });
+        console.error('Gagal mengambil data Mangrove:', err);
       }
     }
 
     // =====================================================
-    // 5. JALANKAN SEMUA
+    // 5. LOAD GEOJSON / JS POLYGON
+    // =====================================================
+    async function loadGeoJsonPolygon(url, groupLayer, styleFn, countElId, popupTitle) {
+      const cntEl = document.getElementById(countElId);
+      if(cntEl) cntEl.innerText = 'loading...';
+      try {
+        const res = await fetch(url);
+        if(!res.ok) throw new Error('File tidak ditemukan atau URL salah');
+        
+        let text = await res.text();
+        if (text.trim().startsWith('var ') || text.includes('=')) {
+          text = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+        }
+        const data = JSON.parse(text);
+
+        let count = 0;
+        L.geoJSON(data, {
+          style: styleFn,
+          onEachFeature: (feature, l) => {
+            count++;
+            let props = feature.properties || {};
+            let propText = '';
+            for (let k in props) {
+              if (props[k] && typeof props[k] !== 'object') {
+                propText += `<div><b>${k}:</b> ${props[k]}</div>`;
+              }
+            }
+            l.bindPopup(`
+              <div style="color:#0f172a; font-family:'Inter', sans-serif; font-size:12px; line-height:1.4;">
+                <strong style="color:#0284c7; font-size:13px; display:block; margin-bottom:6px;">🗺️ ${popupTitle}</strong>
+                ${propText || '<em>Tidak ada detail atribut.</em>'}
+              </div>
+            `);
+
+            if (l.getBounds) {
+              const b = l.getBounds();
+              polygonBounds.push([b.getSouth(), b.getWest()]);
+              polygonBounds.push([b.getNorth(), b.getEast()]);
+            }
+          }
+        }).addTo(groupLayer);
+
+        if(cntEl) cntEl.innerText = count + ' area';
+      } catch(e) {
+        console.warn(`Gagal memuat GeoJSON (${popupTitle}):`, e);
+        if(cntEl) cntEl.innerText = 'Cek file';
+      }
+    }
+
+    async function loadPtfiPolygon() {
+      await loadGeoJsonPolygon(geojsonPtfiUrl, polyPtfiGroup, (feature) => {
+        const status = (feature.properties && (feature.properties.status || feature.properties.Status || feature.properties.STATUS) || '').toLowerCase();
+        const isRencana = status.includes('rencana') || status.includes('plan');
+
+        if (isRencana) {
+          return { color: '#ffee00', weight: 2.5, dashArray: '6, 6', fillColor: '#ffee00', fillOpacity: 0.35 };
+        } else {
+          return { color: '#00ff87', weight: 2.5, fillColor: '#00ff87', fillOpacity: 0.5 };
+        }
+      }, 'cntPolyPtfi', 'Polygon Mangrove');
+      loadedLayers['polyPtfi'] = true;
+    }
+
+    // =====================================================
+    // 6. INITIALIZATION
     // =====================================================
     window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
@@ -1007,8 +1148,7 @@
           datasets: [{
             data: [124, 162, 270, 293],
             backgroundColor: ['#22c55e', '#10b981', '#facc15', '#ef4444'],
-            borderWidth: 0,
-            cutout: '75%'
+            borderWidth: 0, cutout: '75%'
           }]
         },
         options: { plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
@@ -1028,6 +1168,7 @@
       refreshLayerUI();
       loadOilSpillData();
       loadMangroveData();
+      loadPtfiPolygon();
     });
   </script>
 </body>
