@@ -666,7 +666,7 @@
                           <th>Provinsi</th>
                           <th>Lokasi</th>
                           <th>Tahun</th>
-                          <th>Estimasi Tumpahan</th>
+                          <th>Besaran Pencemar</th>
                           <th>Jenis Tumpahan</th>
                         </tr>
                       </thead>
@@ -844,7 +844,7 @@
       });
       const marker = L.marker([lat, lng], { icon });
 
-      // Pengecekan teks merah untuk Estimasi Tumpahan
+      // Pengecekan teks merah untuk Besaran Pencemar
       const isEstMissing = est.toLowerCase().includes('tidak ditemukan');
       const estFormatted = isEstMissing ? `<span class="text-missing">${est}</span>` : est;
 
@@ -858,7 +858,7 @@
             <span style="font-weight:700;">Titik Koordinat</span><span>:</span><span>${lat}, ${lng}</span>
             <span style="font-weight:700;">Tanggal Kejadian</span><span>:</span><span>${date}</span>
             <span style="font-weight:700;">Jenis Tumpahan</span><span>:</span><span style="color:#0284c7; font-weight:700;">${type}</span>
-            <span style="font-weight:700;">Estimasi Tumpahan</span><span>:</span><span>${estFormatted}</span>
+            <span style="font-weight:700;">Besaran Pencemar</span><span>:</span><span>${estFormatted}</span>
             <span style="font-weight:700;">Penyebab</span><span>:</span><span>${cause}</span>
             <span style="font-weight:700;">Tindak Lanjut</span><span>:</span><span>${action}</span>
           </div>
@@ -917,7 +917,7 @@
                G (6) -> Lat, Lon
                H (7) -> Penyebab
                I (8) -> Jenis Tumpahan
-               J (9) -> Estimasi Tumpahan
+               J (9) -> Besaran Pencemar
                K (10)-> Tindak Lanjut
             */
             const loc = row[1] || '-';
@@ -948,7 +948,7 @@
               typeClass = 'type-red';
             }
 
-            // Formatting Estimasi Tumpahan Merah di Tabel jika "tidak ditemukan"
+            // Formatting Besaran Pencemar Merah di Tabel jika "tidak ditemukan"
             const estTableFormatted = est.toLowerCase().includes('tidak ditemukan') ? `<span class="text-missing">${est}</span>` : est;
 
             // Render Baris Tabel
