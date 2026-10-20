@@ -190,15 +190,15 @@
     .legend-row small { display: block; color: #9fb3c0; font-size: 11px; }
 
     .dot-wrap { width: 64px; display: flex; justify-content: center; flex-shrink: 0; }
-.dot-mk {
-  width: 14px; height: 14px; border-radius: 50%;
-  border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.6);
-}
-.leaflet-tooltip.mg-tip {
-  background: rgba(6,18,28,.95); border: 1px solid #2a4252; color: #fff;
-  font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px; box-shadow: none;
-}
-.leaflet-tooltip.mg-tip::before { display: none; }
+    .dot-mk {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.6);
+    }
+    .leaflet-tooltip.mg-tip {
+      background: rgba(6,18,28,.95); border: 1px solid #2a4252; color: #fff;
+      font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px; box-shadow: none;
+    }
+    .leaflet-tooltip.mg-tip::before { display: none; }
 
     /* Legenda Garis/Polygon */
     .poly-line-icon {
@@ -219,10 +219,16 @@
     }
     .c-section-title { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 10px; }
     .c-section .stat-box { border: 1px solid #f59e0b; background-color: var(--card); }
-    .chart-box { width: 120px; height: 120px; position: relative; flex-shrink: 0; }
+    .chart-box { width: 130px; height: 130px; position: relative; flex-shrink: 0; }
     .chart-center-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
-    .chart-center-text .num { font-size: 18px; font-weight: 800; color: #fff; }
-    .chart-center-text .lbl { font-size: 9px; color: var(--muted); }
+    .chart-center-text .num { font-size: 22px; font-weight: 800; color: #fff; line-height: 1.1; }
+    .chart-center-text .lbl { font-size: 10px; color: var(--muted); }
+    .coral-legend { flex: 1; display: flex; flex-direction: column; gap: 9px; font-size: 12px; min-width: 150px; }
+    .coral-row { display: grid; grid-template-columns: 10px 1fr auto 44px; align-items: center; gap: 8px; white-space: nowrap; }
+    .coral-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .coral-name { color: #e2e8f0; }
+    .coral-num { font-weight: 700; color: #fff; text-align: right; }
+    .coral-pct { color: var(--muted); font-size: 11px; text-align: right; }
     .carousel-navigation { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
     .h-scroll-track { flex: 1; height: 6px; background-color: #08202d; border-radius: 4px; position: relative; }
     .h-scroll-thumb { width: 250px; height: 100%; background-color: #6b7a86; border-radius: 4px; position: absolute; left: 0; transition: left .2s ease; }
@@ -407,6 +413,12 @@
                 <span class="cnt" id="cntMgPlan">...</span>
               </label>
 
+              <label class="layer-check">
+                <input type="checkbox" id="chkCoral" checked onchange="setLayer('coral', this.checked)">
+                <span class="dot" style="background:#06b6d4;"></span><span>Inventarisasi Terumbu Karang (Titik)</span>
+                <span class="cnt" id="cntCoral">...</span>
+              </label>
+
               <div class="panel-divider"></div>
 
               <!-- LAYER POLYGON MANGROVE & PERUNTUKKAN -->
@@ -445,21 +457,33 @@
           <div class="layer-modal show" id="legendPanel">
             <div class="layer-modal-header"><span style="font-size:16px; font-weight:600;">Legend</span></div>
             <div class="panel-divider"></div>
-            
+
             <div class="legend-row" id="legOil">
               <span class="pill-mk" style="background:#ef4444;"><span class="pi"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.5s6.5 7 6.5 11.5a6.5 6.5 0 0 1-13 0C5.5 9.5 12 2.5 12 2.5z"/></svg></span><span class="pc" style="background:#7f1d1d;"></span></span>
               <span>Oil Spill<small>angka = no. kejadian</small></span>
             </div>
 
             <div class="legend-row" id="legMgReal">
-  <span class="dot-wrap"><span class="dot-mk" style="background:#22c55e;"></span></span>
-  <span>Mangrove Realisasi<small>titik = lokasi yang sudah ditanami</small></span>
-</div>
+              <span class="dot-wrap"><span class="dot-mk" style="background:#22c55e;"></span></span>
+              <span>Mangrove Realisasi<small>titik = lokasi yang sudah ditanami</small></span>
+            </div>
 
-<div class="legend-row" id="legMgPlan">
-  <span class="dot-wrap"><span class="dot-mk" style="background:#facc15;"></span></span>
-  <span>Mangrove Rencana<small>titik = lokasi dalam perencanaan</small></span>
-</div>
+            <div class="legend-row" id="legMgPlan">
+              <span class="dot-wrap"><span class="dot-mk" style="background:#facc15;"></span></span>
+              <span>Mangrove Rencana<small>titik = lokasi dalam perencanaan</small></span>
+            </div>
+
+            <div class="legend-row" id="legCoral">
+              <span class="dot-wrap"><span class="dot-mk" style="width:12px;height:12px;background:#22d3ee;"></span></span>
+              <span>Inventarisasi Terumbu Karang
+                <small>
+                  <span style="color:#3b82f6;">● Baik Sekali</span>&nbsp;
+                  <span style="color:#22d3ee;">● Baik</span>&nbsp;
+                  <span style="color:#facc15;">● Sedang</span>&nbsp;
+                  <span style="color:#ef4444;">● Buruk</span>
+                </small>
+              </span>
+            </div>
 
             <div class="legend-row" id="legPolyPtfi">
               <span class="poly-line-icon" style="border-color:#22c55e; border-style:solid; background:rgba(34,197,94,0.3);"></span>
@@ -527,18 +551,21 @@
             </div>
 
             <!-- STATUS KERUSAKAN TERUMBU -->
-            <div class="c-section" style="flex:0.9;">
-              <div class="c-section-title">Status Kerusakan Terumbu <span style="float:right; color:#38bdf8; font-size:12px; font-weight:500;">849 titik</span></div>
-              <div style="display:flex; align-items:center; gap:14px;">
+            <div class="c-section" style="flex:1;">
+              <div class="c-section-title" style="display:flex; justify-content:space-between; align-items:baseline; gap:10px;">
+                <span>Status Kerusakan Terumbu</span>
+                <span id="coralTotalHdr" style="color:#38bdf8; font-size:12px; font-weight:500; white-space:nowrap;">... titik</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:20px;">
                 <div class="chart-box">
                   <canvas id="coralDonutChart"></canvas>
-                  <div class="chart-center-text"><div class="num">849</div><div class="lbl">titik pantau</div></div>
+                  <div class="chart-center-text"><div class="num" id="coralTotal">...</div><div class="lbl">titik pantau</div></div>
                 </div>
-                <div style="font-size:12px; display:flex; flex-direction:column; gap:6px; flex:1;">
-                  <div style="display:flex; justify-content:space-between;"><span style="color:#22c55e;">● Sangat Baik</span><strong>124</strong></div>
-                  <div style="display:flex; justify-content:space-between;"><span style="color:#10b981;">● Baik</span><strong>162</strong></div>
-                  <div style="display:flex; justify-content:space-between;"><span style="color:#facc15;">● Sedang</span><strong>270</strong></div>
-                  <div style="display:flex; justify-content:space-between;"><span style="color:#ef4444;">● Buruk</span><strong>293</strong></div>
+                <div class="coral-legend">
+                  <div class="coral-row"><span class="coral-dot" style="background:#3b82f6;"></span><span class="coral-name">Baik Sekali</span><span class="coral-num" id="coralCnt0">...</span><span class="coral-pct" id="coralPct0"></span></div>
+                  <div class="coral-row"><span class="coral-dot" style="background:#22d3ee;"></span><span class="coral-name">Baik</span><span class="coral-num" id="coralCnt1">...</span><span class="coral-pct" id="coralPct1"></span></div>
+                  <div class="coral-row"><span class="coral-dot" style="background:#facc15;"></span><span class="coral-name">Sedang</span><span class="coral-num" id="coralCnt2">...</span><span class="coral-pct" id="coralPct2"></span></div>
+                  <div class="coral-row"><span class="coral-dot" style="background:#ef4444;"></span><span class="coral-name">Buruk</span><span class="coral-num" id="coralCnt3">...</span><span class="coral-pct" id="coralPct3"></span></div>
                 </div>
               </div>
             </div>
@@ -651,10 +678,11 @@
     // =====================================================
     const csvUrl = 'https://docs.google.com/spreadsheets/d/1VZb_j_iaMJXRX56AFjVvUyJLQSEW1vx23dwgG3-4a0U/gviz/tq?tqx=out:csv&gid=296430431';
     const mangroveCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSY5Ix-OMMx9U4uLhV4PHkBUN7OVijzUFmWjEI09btjgAv8pIV087SachUM1Vk_SW6_7WyTYMd2-UVo/pub?gid=1462568354&single=true&output=csv';
+    const coralCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZyb-FxkCzwhVJ_9yhyJPuUqspWkDZhKR0q8hSDu7ajoFCS1qIpe1YR2eX287VKg/pub?gid=776908413&single=true&output=csv';
 
     // GeoJSON URLs
-    const geojsonPtfiUrl = 'https://raw.githubusercontent.com/sintaergunap-hue/Dashboard-Penanaman-Mangrove-Nasional/main/PTFI_ALL_MANGROVE.json';
-    
+    const geojsonPtfiUrl = 'https://raw.githubusercontent.com/sintaergunap-hue/IBEQ-MARINE/main/Mangrove_PTFI_Jababeka.geojson';
+
     // URL Peruntukkan Mangrove berdasarkan folder di GitHub
     const geojsonLebatUrl = 'https://raw.githubusercontent.com/sintaergunap-hue/Dashboard-Penanaman-Mangrove-Nasional/main/Mangrove%20Lebat/KTTJ_MANGROVELEBAT_2_ACEH.js';
     const geojsonSedangUrl = 'https://raw.githubusercontent.com/sintaergunap-hue/Dashboard-Penanaman-Mangrove-Nasional/main/Mangrove%20Sedang/KTTJ_MANGROVESEDANG_3_ACEH.js';
@@ -665,7 +693,7 @@
     // =====================================================
     const map = L.map('leaflet-map', {
       center: [-2.5489, 118.0149], zoom: 5, zoomControl: false, attributionControl: false,
-      zoomSnap: 0.25, zoomDelta: 0.5
+      zoomSnap: 0.25, zoomDelta: 0.5, preferCanvas: true
     });
 
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }).addTo(map);
@@ -675,6 +703,7 @@
     const oilSpillLayerGroup = L.layerGroup().addTo(map);
     const mangroveRealGroup = L.layerGroup().addTo(map);
     const mangrovePlanGroup = L.layerGroup().addTo(map);
+    const coralGroup = L.layerGroup().addTo(map);
 
     // Polygon Layer Groups
     const polyPtfiGroup = L.layerGroup().addTo(map);
@@ -686,6 +715,7 @@
       oil: oilSpillLayerGroup,
       mgReal: mangroveRealGroup,
       mgPlan: mangrovePlanGroup,
+      coral: coralGroup,
       polyPtfi: polyPtfiGroup,
       polyLebat: polyLebatGroup,
       polySedang: polySedangGroup,
@@ -696,6 +726,7 @@
       oil: 'chkOil',
       mgReal: 'chkMgReal',
       mgPlan: 'chkMgPlan',
+      coral: 'chkCoral',
       polyPtfi: 'chkPolyPtfi',
       polyLebat: 'chkPolyLebat',
       polySedang: 'chkPolySedang',
@@ -706,6 +737,7 @@
       oil: 'legOil',
       mgReal: 'legMgReal',
       mgPlan: 'legMgPlan',
+      coral: 'legCoral',
       polyPtfi: 'legPolyPtfi',
       polyLebat: 'legPolyLebat',
       polySedang: 'legPolySedang',
@@ -1042,18 +1074,18 @@
           const label = i.isReal ? 'Terealisasi' : 'Dalam Perencanaan';
 
           const m = L.circleMarker([i.lat, i.lng], {
-  radius: i.isReal ? 6 : 5,
-  color: '#ffffff',
-  weight: 1.5,
-  fillColor: i.isReal ? '#22c55e' : '#facc15',
-  fillOpacity: 0.95
-});
+            radius: i.isReal ? 6 : 5,
+            color: '#ffffff',
+            weight: 1.5,
+            fillColor: i.isReal ? '#22c55e' : '#facc15',
+            fillOpacity: 0.95
+          });
 
-m.bindTooltip(`${i.name} • ${i.numLuas.toFixed(2)} ha`, {
-  direction: 'top', offset: [0, -6], className: 'mg-tip'
-});
-m.on('mouseover', () => m.setStyle({ radius: 9, weight: 2 }));
-m.on('mouseout',  () => m.setStyle({ radius: i.isReal ? 6 : 5, weight: 1.5 }));
+          m.bindTooltip(`${i.name} • ${i.numLuas.toFixed(2)} ha`, {
+            direction: 'top', offset: [0, -6], className: 'mg-tip'
+          });
+          m.on('mouseover', () => m.setStyle({ radius: 9, weight: 2 }));
+          m.on('mouseout',  () => m.setStyle({ radius: i.isReal ? 6 : 5, weight: 1.5 }));
 
           // POP-UP SESUAI SHEETS TANPA PEMBULATAN
           m.bindPopup(`
@@ -1088,6 +1120,120 @@ m.on('mouseout',  () => m.setStyle({ radius: i.isReal ? 6 : 5, weight: 1.5 }));
     }
 
     // =====================================================
+    // 4b. INVENTARISASI TERUMBU KARANG
+    // =====================================================
+    let coralChart;
+    const CORAL_ORDER = ['Baik Sekali', 'Baik', 'Sedang', 'Buruk'];
+    const CORAL_COLORS = { 'Baik Sekali': '#3b82f6', 'Baik': '#22d3ee', 'Sedang': '#facc15', 'Buruk': '#ef4444' };
+
+    function normCoralStatus(s) {
+      const t = (s || '').toLowerCase().trim();
+      if (t.includes('sekali') || t.includes('sangat')) return 'Baik Sekali';
+      if (t.startsWith('baik')) return 'Baik';
+      if (t.includes('sedang')) return 'Sedang';
+      if (t.includes('buruk') || t.includes('rusak')) return 'Buruk';
+      return null;
+    }
+    const pct = v => { const n = parseFloat(String(v).replace(',', '.')); return isNaN(n) ? '-' : n.toFixed(2) + '%'; };
+
+    async function loadCoralData() {
+      try {
+        const res = await fetch(coralCsvUrl);
+        const data = parseCSV(await res.text());
+
+        const hi = data.findIndex(r => r.some(c => normHeader(c) === 'status') && r.some(c => normHeader(c) === 'latitude'));
+        if (hi < 0) { console.warn('Header terumbu karang tidak ditemukan'); return; }
+
+        const H = data[hi].map(normHeader);
+        const idx = n => H.indexOf(n);
+        const idxStart = p => H.findIndex(h => h.startsWith(p));
+        const c = {
+          prov: idx('province'), loc: idx('residence'), name: idx('name'),
+          status: idx('status'), tipe: idx('tipeterumbukarang'),
+          lat: idx('latitude'), lng: idx('longtitude') >= 0 ? idx('longtitude') : idx('longitude'),
+          hc: idxStart('hchard'), dc: idxStart('dcdcb'), dca: idxStart('dcadead'),
+          sc: idxStart('scsoft'), sp: idxStart('spsponge'), ma: idxStart('fsma'), ot: idxStart('otother'),
+          r: idx('r'), s: idx('s'), si: idx('si'), rk: idxStart('rkrock')
+        };
+        const g = (r, i) => (i >= 0 ? (r[i] || '').trim() : '');
+
+        const items = data.slice(hi + 1).map(r => ({
+          status: normCoralStatus(g(r, c.status)),
+          prov: g(r, c.prov) || '-', loc: g(r, c.loc) || '-', name: g(r, c.name) || '-',
+          tipe: g(r, c.tipe) || '-',
+          lat: parseFloat(g(r, c.lat).replace(',', '.')),
+          lng: parseFloat(g(r, c.lng).replace(',', '.')),
+          hc: g(r, c.hc), dc: g(r, c.dc), dca: g(r, c.dca), sc: g(r, c.sc), sp: g(r, c.sp),
+          ma: g(r, c.ma), ot: g(r, c.ot), r: g(r, c.r), s: g(r, c.s), si: g(r, c.si), rk: g(r, c.rk)
+        })).filter(i => i.status);
+
+        // ---- Pie chart + angka ----
+        const counts = { 'Baik Sekali': 0, 'Baik': 0, 'Sedang': 0, 'Buruk': 0 };
+        items.forEach(i => counts[i.status]++);
+        const total = items.length.toLocaleString('id-ID');
+        document.getElementById('coralTotal').innerText = total;
+        document.getElementById('coralTotalHdr').innerText = total + ' titik';
+        CORAL_ORDER.forEach((k, n) => {
+          document.getElementById('coralCnt' + n).innerText = counts[k].toLocaleString('id-ID');
+          const share = items.length ? (counts[k] / items.length * 100).toFixed(1).replace('.', ',') + '%' : '0%';
+          document.getElementById('coralPct' + n).innerText = share;
+        });
+        if (coralChart) {
+          coralChart.data.datasets[0].data = CORAL_ORDER.map(k => counts[k]);
+          coralChart.update();
+        }
+
+        // ---- Titik di peta ----
+        coralGroup.clearLayers();
+        let plotted = 0;
+        items.forEach(i => {
+          if (isNaN(i.lat) || isNaN(i.lng)) return;
+          if (i.lat < -12 || i.lat > 8 || i.lng < 94 || i.lng > 142) return; // di luar Indonesia
+
+          const col = CORAL_COLORS[i.status];
+          const m = L.circleMarker([i.lat, i.lng], {
+            radius: 4.5, color: '#ffffff', weight: 1.5, fillColor: col, fillOpacity: 0.95
+          });
+
+          m.bindTooltip(`${i.name} • ${i.status}`, { direction: 'top', offset: [0, -6], className: 'mg-tip' });
+          m.on('mouseover', () => m.setStyle({ radius: 8, weight: 2 }));
+          m.on('mouseout',  () => m.setStyle({ radius: 4.5, weight: 1.5 }));
+
+          m.bindPopup(`
+            <div style="color:#0f172a; font-family:'Inter', sans-serif; font-size:12px; line-height:1.5; min-width:290px;">
+              <strong style="color:#0284c7; font-size:13px; display:block; margin-bottom:8px;">🪸 ${i.name}</strong>
+              <div style="display:grid; grid-template-columns:130px 10px 1fr; gap:4px 0; align-items:start;">
+                <span style="font-weight:700;">Status</span><span>:</span><span style="font-weight:700; color:${col};">${i.status}</span>
+                <span style="font-weight:700;">Provinsi</span><span>:</span><span>${i.prov}</span>
+                <span style="font-weight:700;">Lokasi</span><span>:</span><span>${i.loc}</span>
+                <span style="font-weight:700;">Tipe Terumbu</span><span>:</span><span>${i.tipe}</span>
+                <span style="font-weight:700;">Titik Koordinat</span><span>:</span><span>${i.lat}, ${i.lng}</span>
+                <span style="font-weight:700;">Karang Keras (HC)</span><span>:</span><span>${pct(i.hc)}</span>
+                <span style="font-weight:700;">Karang Mati (DC)</span><span>:</span><span>${pct(i.dc)}</span>
+                <span style="font-weight:700;">Dead Coral Algae</span><span>:</span><span>${pct(i.dca)}</span>
+                <span style="font-weight:700;">Karang Lunak (SC)</span><span>:</span><span>${pct(i.sc)}</span>
+                <span style="font-weight:700;">Sponge (SP)</span><span>:</span><span>${pct(i.sp)}</span>
+                <span style="font-weight:700;">Makroalga</span><span>:</span><span>${pct(i.ma)}</span>
+                <span style="font-weight:700;">Lainnya (OT)</span><span>:</span><span>${pct(i.ot)}</span>
+                <span style="font-weight:700;">Rubble (R)</span><span>:</span><span>${pct(i.r)}</span>
+                <span style="font-weight:700;">Pasir (S)</span><span>:</span><span>${pct(i.s)}</span>
+                <span style="font-weight:700;">Silt (SI)</span><span>:</span><span>${pct(i.si)}</span>
+                <span style="font-weight:700;">Batu (RK)</span><span>:</span><span>${pct(i.rk)}</span>
+              </div>
+            </div>
+          `);
+
+          m.addTo(coralGroup);
+          plotted++;
+        });
+        document.getElementById('cntCoral').innerText = plotted;
+
+      } catch (err) {
+        console.error('Gagal mengambil data Terumbu Karang:', err);
+      }
+    }
+
+    // =====================================================
     // 5. LOAD GEOJSON / JS POLYGON
     // =====================================================
     async function loadGeoJsonPolygon(url, groupLayer, styleFn, countElId, popupTitle) {
@@ -1096,7 +1242,7 @@ m.on('mouseout',  () => m.setStyle({ radius: i.isReal ? 6 : 5, weight: 1.5 }));
       try {
         const res = await fetch(url);
         if(!res.ok) throw new Error('File tidak ditemukan atau URL salah');
-        
+
         let text = await res.text();
         if (text.trim().startsWith('var ') || text.includes('=')) {
           text = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
@@ -1158,17 +1304,21 @@ m.on('mouseout',  () => m.setStyle({ radius: i.isReal ? 6 : 5, weight: 1.5 }));
       lucide.createIcons();
 
       const ctx = document.getElementById('coralDonutChart').getContext('2d');
-      new Chart(ctx, {
+      coralChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: ['Sangat Baik', 'Baik', 'Sedang', 'Buruk'],
+          labels: ['Baik Sekali', 'Baik', 'Sedang', 'Buruk'],
           datasets: [{
-            data: [124, 162, 270, 293],
-            backgroundColor: ['#22c55e', '#10b981', '#facc15', '#ef4444'],
-            borderWidth: 0, cutout: '75%'
+            data: [0, 0, 0, 0],
+            backgroundColor: ['#3b82f6', '#22d3ee', '#facc15', '#ef4444'],
+            borderWidth: 3, borderColor: '#08243a', borderRadius: 4, hoverOffset: 4
           }]
         },
-        options: { plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
+        options: {
+          cutout: '72%',
+          plugins: { legend: { display: false } },
+          responsive: true, maintainAspectRatio: false
+        }
       });
 
       const carouselTrack = document.getElementById('carouselTrack');
@@ -1186,6 +1336,7 @@ m.on('mouseout',  () => m.setStyle({ radius: i.isReal ? 6 : 5, weight: 1.5 }));
       loadOilSpillData();
       loadMangroveData();
       loadPtfiPolygon();
+      loadCoralData();
     });
   </script>
 </body>
