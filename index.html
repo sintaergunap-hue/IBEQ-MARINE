@@ -189,6 +189,17 @@
     .legend-row .pill-mk { width: 64px; height: 26px; cursor: default; }
     .legend-row small { display: block; color: #9fb3c0; font-size: 11px; }
 
+    .dot-wrap { width: 64px; display: flex; justify-content: center; flex-shrink: 0; }
+.dot-mk {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.6);
+}
+.leaflet-tooltip.mg-tip {
+  background: rgba(6,18,28,.95); border: 1px solid #2a4252; color: #fff;
+  font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px; box-shadow: none;
+}
+.leaflet-tooltip.mg-tip::before { display: none; }
+
     /* Legenda Garis/Polygon */
     .poly-line-icon {
       width: 32px; height: 16px; display: inline-block; border-radius: 4px; border: 2px solid; flex-shrink: 0;
@@ -441,14 +452,14 @@
             </div>
 
             <div class="legend-row" id="legMgReal">
-              <span class="pill-mk" style="background:#22c55e;"><span class="pi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span><span class="pc" style="background:#14532d;"></span></span>
-              <span>Mangrove Realisasi<small>angka = luas (ha)</small></span>
-            </div>
+  <span class="dot-wrap"><span class="dot-mk" style="background:#22c55e;"></span></span>
+  <span>Mangrove Realisasi<small>titik = lokasi yang sudah ditanami</small></span>
+</div>
 
-            <div class="legend-row" id="legMgPlan">
-              <span class="pill-mk" style="background:#facc15;"><span class="pi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span><span class="pc" style="background:#5c4a06;"></span></span>
-              <span>Mangrove Rencana<small>angka = luas (ha)</small></span>
-            </div>
+<div class="legend-row" id="legMgPlan">
+  <span class="dot-wrap"><span class="dot-mk" style="background:#facc15;"></span></span>
+  <span>Mangrove Rencana<small>titik = lokasi dalam perencanaan</small></span>
+</div>
 
             <div class="legend-row" id="legPolyPtfi">
               <span class="poly-line-icon" style="border-color:#22c55e; border-style:solid; background:rgba(34,197,94,0.3);"></span>
@@ -1030,13 +1041,19 @@
           const tone = i.isReal ? '#15803d' : '#a16207';
           const label = i.isReal ? 'Terealisasi' : 'Dalam Perencanaan';
 
-          const m = L.marker([i.lat, i.lng], {
-            icon: L.divIcon({
-              className: '',
-              html: pillHTML(i.isReal ? PILL.real : PILL.plan, leafSVG, i.luasStr),
-              iconSize: [60, 24], iconAnchor: [30, 12], popupAnchor: [0, -12]
-            })
-          });
+          const m = L.circleMarker([i.lat, i.lng], {
+  radius: i.isReal ? 6 : 5,
+  color: '#ffffff',
+  weight: 1.5,
+  fillColor: i.isReal ? '#22c55e' : '#facc15',
+  fillOpacity: 0.95
+});
+
+m.bindTooltip(`${i.name} • ${i.numLuas.toFixed(2)} ha`, {
+  direction: 'top', offset: [0, -6], className: 'mg-tip'
+});
+m.on('mouseover', () => m.setStyle({ radius: 9, weight: 2 }));
+m.on('mouseout',  () => m.setStyle({ radius: i.isReal ? 6 : 5, weight: 1.5 }));
 
           // POP-UP SESUAI SHEETS TANPA PEMBULATAN
           m.bindPopup(`
