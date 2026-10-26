@@ -396,6 +396,12 @@
             </div>
             <div id="filterBody" class="layer-check-list">
               <label class="layer-check">
+                <input type="checkbox" id="chkCoralResto" checked onchange="setLayer('coralResto', this.checked)">
+                <span class="dot" style="background:#0284c7;"></span><span>Pemulihan Terumbu Karang (Titik)</span>
+                <span class="cnt" id="cntCoralResto">...</span>
+              </label>
+
+              <label class="layer-check">
                 <input type="checkbox" id="chkOil" checked onchange="setLayer('oil', this.checked)">
                 <span class="dot" style="background:#ef4444;"></span><span>Oil Spill (Titik)</span>
                 <span class="cnt" id="cntOil">...</span>
@@ -457,6 +463,11 @@
           <div class="layer-modal show" id="legendPanel">
             <div class="layer-modal-header"><span style="font-size:16px; font-weight:600;">Legend</span></div>
             <div class="panel-divider"></div>
+
+            <div class="legend-row" id="legCoralResto">
+              <span class="pill-mk" style="background:#0284c7;"><span class="pi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></span><span class="pc" style="background:#0369a1;"></span></span>
+              <span>Pemulihan Terumbu<small>angka = no. lokasi pemulihan</small></span>
+            </div>
 
             <div class="legend-row" id="legOil">
               <span class="pill-mk" style="background:#ef4444;"><span class="pi"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.5s6.5 7 6.5 11.5a6.5 6.5 0 0 1-13 0C5.5 9.5 12 2.5 12 2.5z"/></svg></span><span class="pc" style="background:#7f1d1d;"></span></span>
@@ -527,25 +538,25 @@
         <div class="carousel-track" id="carouselTrack">
           <div class="carousel-card">
 
-            <!-- TERUMBU KARANG -->
+            <!-- TERUMBU KARANG (DATA PEMULIHAN REAL DARI CSV SPREADSHEET) -->
             <div class="c-section" style="flex:1;">
               <div class="c-section-title">Terumbu Karang</div>
               <div style="display:flex; gap:12px;">
                 <div class="stat-box" style="flex:1;">
                   <div class="stat-label">Luas Pemulihan Terumbu</div>
-                  <div style="font-size:26px; font-weight:600; color:#38bdf8;">18,42 ha</div>
-                  <div style="font-size:12px; color:#64748b;">67 lokasi kegiatan</div>
+                  <div style="font-size:26px; font-weight:600; color:#38bdf8;" id="coralRestoHa">...</div>
+                  <div style="font-size:12px; color:#64748b;" id="coralRestoLoc">... lokasi kegiatan</div>
                 </div>
                 <div style="flex:1.4;">
                   <div style="font-size:12px; color:#94a3b8; margin-bottom:6px;">Lokasi Pemulihan Terumbu Karang</div>
-                  <table class="custom-table">
-                    <thead><tr><th>Lokasi</th><th>Provinsi</th><th>Luas</th></tr></thead>
-                    <tbody>
-                      <tr><td>Pulau Lengkuas</td><td>Kep. Babel</td><td>716 m²</td></tr>
-                      <tr><td>Bonetambung</td><td>Sulsel</td><td>1.300 m²</td></tr>
-                      <tr><td>Pesawaran</td><td>Lampung</td><td>100 m²</td></tr>
-                    </tbody>
-                  </table>
+                  <div class="table-scroll-container">
+                    <table class="custom-table">
+                      <thead><tr><th>Lokasi</th><th>Provinsi</th><th>Luas</th></tr></thead>
+                      <tbody id="coralRestoTableBody">
+                        <tr><td colspan="3" style="text-align:center; color:#94a3b8; padding:8px;">Memuat data...</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -679,6 +690,9 @@
     const csvUrl = 'https://docs.google.com/spreadsheets/d/1VZb_j_iaMJXRX56AFjVvUyJLQSEW1vx23dwgG3-4a0U/gviz/tq?tqx=out:csv&gid=296430431';
     const mangroveCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSY5Ix-OMMx9U4uLhV4PHkBUN7OVijzUFmWjEI09btjgAv8pIV087SachUM1Vk_SW6_7WyTYMd2-UVo/pub?gid=1462568354&single=true&output=csv';
     const coralCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZyb-FxkCzwhVJ_9yhyJPuUqspWkDZhKR0q8hSDu7ajoFCS1qIpe1YR2eX287VKg/pub?gid=776908413&single=true&output=csv';
+    
+    // Tautan Spreadsheet Pemulihan Terumbu Karang
+    const coralRestorationCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRoZ7W24Xyf8gTJRJKVFdkZX0WLy4Q4mOfMlp9w7RGBI-CC6UEObUeb_O4qsYk4zBttNSWMleGDKqDc/pub?output=csv';
 
     // GeoJSON URLs
     const geojsonPtfiUrl = 'https://raw.githubusercontent.com/sintaergunap-hue/IBEQ-MARINE/main/Mangrove_PTFI_Jababeka.geojson';
@@ -700,6 +714,7 @@
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }).addTo(map);
 
     // Marker Layer Groups
+    const coralRestoLayerGroup = L.layerGroup().addTo(map);
     const oilSpillLayerGroup = L.layerGroup().addTo(map);
     const mangroveRealGroup = L.layerGroup().addTo(map);
     const mangrovePlanGroup = L.layerGroup().addTo(map);
@@ -712,6 +727,7 @@
     const polyJarangGroup = L.layerGroup();
 
     const layerGroups = {
+      coralResto: coralRestoLayerGroup,
       oil: oilSpillLayerGroup,
       mgReal: mangroveRealGroup,
       mgPlan: mangrovePlanGroup,
@@ -723,6 +739,7 @@
     };
 
     const layerChecks = {
+      coralResto: 'chkCoralResto',
       oil: 'chkOil',
       mgReal: 'chkMgReal',
       mgPlan: 'chkMgPlan',
@@ -734,6 +751,7 @@
     };
 
     const legendRows = {
+      coralResto: 'legCoralResto',
       oil: 'legOil',
       mgReal: 'legMgReal',
       mgPlan: 'legMgPlan',
@@ -889,18 +907,179 @@
     }
 
     // =====================================================
-    // 3. OIL SPILL DATA
+    // 3. PEMULIHAN TERUMBU KARANG (DATA & MARKER PETA)
     // =====================================================
-    const dropletSVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.5s6.5 7 6.5 11.5a6.5 6.5 0 0 1-13 0C5.5 9.5 12 2.5 12 2.5z"/></svg>';
-    const leafSVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>';
+    const coralIconSVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>';
     const PILL = {
-      oil:  { c: '#ef4444', d: '#7f1d1d' },
-      real: { c: '#22c55e', d: '#14532d' },
-      plan: { c: '#facc15', d: '#5c4a06' }
+      oil:        { c: '#ef4444', d: '#7f1d1d' },
+      coralResto: { c: '#0284c7', d: '#0369a1' },
+      real:       { c: '#22c55e', d: '#14532d' },
+      plan:       { c: '#facc15', d: '#5c4a06' }
     };
     function pillHTML(pal, iconSVG, text) {
       return `<div class="pill-mk" style="background:${pal.c};"><span class="pi">${iconSVG}</span><span class="pc" style="background:${pal.d};">${text}</span></div>`;
     }
+
+    async function loadCoralRestorationData() {
+      const tbody = document.getElementById('coralRestoTableBody');
+      try {
+        const res = await fetch(coralRestorationCsvUrl);
+        const csvText = await res.text();
+        const dataRows = parseCSV(csvText);
+
+        coralRestoLayerGroup.clearLayers();
+
+        if (dataRows.length <= 1) return;
+
+        const normHeader = h => (h || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const headerRowIndex = dataRows.findIndex(r => r.some(c => {
+          const nh = normHeader(c);
+          return nh.includes('lokasi') || nh.includes('luas') || nh.includes('kab') || nh.includes('tahun') || nh.includes('lat');
+        }));
+        
+        if (headerRowIndex < 0) return;
+
+        const headers = dataRows[headerRowIndex].map(normHeader);
+
+        // Dynamic Field Mapping yang lebih fleksibel
+        const idxTahun    = headers.findIndex(h => h.includes('tahun'));
+        const idxProv     = headers.findIndex(h => h.includes('prov'));
+        const idxKab      = headers.findIndex(h => h.includes('kab') || h.includes('kota'));
+        const idxLoc      = headers.findIndex(h => h.includes('lokasi') || h.includes('desa'));
+        
+        // Pencarian Kolom Latitude & Longitude (termasuk ejaan 'longtitude')
+        let idxLat        = headers.findIndex(h => h.includes('lat') || h === 'y');
+        let idxLng        = headers.findIndex(h => h.includes('long') || h.includes('lng') || h === 'x');
+        
+        const idxLuas     = headers.findIndex(h => h.includes('luas'));
+        const idxJnsMedia = headers.findIndex(h => h.includes('jenismedia') || h.includes('media'));
+        const idxJmlMedia = headers.findIndex(h => h.includes('jumlahmedia') || h.includes('jmlmedia'));
+        const idxBibit    = headers.findIndex(h => h.includes('bibit') || h.includes('terumbu'));
+
+        const rows = dataRows.slice(headerRowIndex + 1).filter(r => {
+          if (!r || r.length <= 1) return false;
+          const k = (idxKab >= 0 ? r[idxKab] : '').trim();
+          const l = (idxLoc >= 0 ? r[idxLoc] : '').trim();
+          const p = (idxProv >= 0 ? r[idxProv] : '').trim();
+          return k !== '' || l !== '' || p !== '';
+        });
+
+        let totalLuasM2 = 0;
+        let validLocationsCount = 0;
+        let tableRowsHTML = '';
+        let plottedCount = 0;
+
+        rows.forEach((r, idx) => {
+          const tahun    = (idxTahun >= 0 ? r[idxTahun] : '') || '-';
+          const prov     = (idxProv >= 0 ? r[idxProv] : '') || '-';
+          const kab      = (idxKab >= 0 ? r[idxKab] : '') || '';
+          const locDetail= (idxLoc >= 0 ? r[idxLoc] : '') || '';
+          
+          const displayKabLokasi = kab || locDetail || prov || '-';
+
+          // Ambil string koordinat
+          const rawLatStr = idxLat >= 0 ? r[idxLat] : '';
+          const rawLngStr = idxLng >= 0 ? r[idxLng] : '';
+          
+          const rawLuas  = (idxLuas >= 0 ? r[idxLuas] : '') || '-';
+          const jnsMedia = (idxJnsMedia >= 0 ? r[idxJnsMedia] : '') || '-';
+          const jmlMedia = (idxJmlMedia >= 0 ? r[idxJmlMedia] : '') || '-';
+          const jmlBibit = (idxBibit >= 0 ? r[idxBibit] : '') || '-';
+
+          // Hitung Luas
+          let numLuas = 0;
+          const cleanLuasStr = rawLuas.replace(/\./g, '').replace(',', '.').replace(/[^0-9.]/g, '');
+          const valParsed = parseFloat(cleanLuasStr);
+
+          if (!isNaN(valParsed)) {
+            if (rawLuas.toLowerCase().includes('ha')) {
+              numLuas = valParsed * 10000;
+            } else {
+              numLuas = valParsed;
+            }
+            totalLuasM2 += numLuas;
+          }
+
+          validLocationsCount++;
+
+          // Tampilan Luas
+          let displayLuasStr = rawLuas;
+          if (!isNaN(valParsed) && !rawLuas.toLowerCase().includes('m') && !rawLuas.toLowerCase().includes('ha')) {
+            displayLuasStr = valParsed.toLocaleString('id-ID') + ' m²';
+          }
+
+          tableRowsHTML += `
+            <tr>
+              <td>${displayKabLokasi}</td>
+              <td>${prov}</td>
+              <td>${displayLuasStr}</td>
+            </tr>
+          `;
+
+          // Sanitasi & Parsing Koordinat
+          const lat = parseFloat(rawLatStr ? rawLatStr.replace(',', '.').replace(/[^0-9.-]/g, '') : '');
+          const lng = parseFloat(rawLngStr ? rawLngStr.replace(',', '.').replace(/[^0-9.-]/g, '') : '');
+
+          // Validasi koordinat di wilayah Indonesia
+          if (!isNaN(lat) && !isNaN(lng) && lat >= -12 && lat <= 8 && lng >= 94 && lng <= 142) {
+            plottedCount++;
+            const icon = L.divIcon({
+              className: '',
+              html: pillHTML(PILL.coralResto, coralIconSVG, plottedCount),
+              iconSize: [60, 24], iconAnchor: [30, 12], popupAnchor: [0, -12]
+            });
+            const marker = L.marker([lat, lng], { icon });
+
+            // POPUP FORMAT PILLS
+            marker.bindPopup(`
+              <div style="color:#0f172a; font-family:'Inter', sans-serif; font-size:12px; line-height:1.5; min-width:300px;">
+                <strong style="color:#0284c7; font-size:13px; display:block; margin-bottom:8px;">🪸 Pemulihan Terumbu Karang (${displayKabLokasi})</strong>
+                <div style="display:grid; grid-template-columns:130px 10px 1fr; gap:4px 0; align-items:start;">
+                  <span style="font-weight:700;">Tahun Penanaman</span><span>:</span><span>${tahun}</span>
+                  <span style="font-weight:700;">Provinsi</span><span>:</span><span>${prov}</span>
+                  <span style="font-weight:700;">Kabupaten / Kota</span><span>:</span><span>${kab || '-'}</span>
+                  <span style="font-weight:700;">Longitude</span><span>:</span><span>${lng}</span>
+                  <span style="font-weight:700;">Latitude</span><span>:</span><span>${lat}</span>
+                  <span style="font-weight:700;">Luas Penanaman</span><span>:</span><span style="color:#0284c7; font-weight:700;">${displayLuasStr}</span>
+                  <span style="font-weight:700;">Jenis Media</span><span>:</span><span>${jnsMedia}</span>
+                  <span style="font-weight:700;">Jumlah Media</span><span>:</span><span>${jmlMedia}</span>
+                  <span style="font-weight:700;">Jumlah Bibit</span><span>:</span><span>${jmlBibit}</span>
+                </div>
+              </div>
+            `);
+
+            marker.addTo(coralRestoLayerGroup);
+            allBounds.push([lat, lng]);
+          }
+        });
+
+        // Tampilkan Ringkasan
+        const totalHa = (totalLuasM2 / 10000).toFixed(2).replace('.', ',');
+        document.getElementById('coralRestoHa').innerText = totalHa + ' ha';
+        document.getElementById('coralRestoLoc').innerText = validLocationsCount + ' lokasi kegiatan';
+        document.getElementById('cntCoralResto').innerText = plottedCount > 0 ? plottedCount + ' titik' : validLocationsCount;
+
+        if (tableRowsHTML) {
+          tbody.innerHTML = tableRowsHTML;
+        } else {
+          tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">Tidak ada data pemulihan</td></tr>`;
+        }
+
+        // Auto zoom ke seluruh titik jika ditemukan
+        if (allBounds.length > 0) {
+          fitAll();
+        }
+
+      } catch (err) {
+        console.error('Gagal mengambil data Pemulihan Terumbu Karang:', err);
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ef4444;">Gagal memuat data</td></tr>`;
+      }
+    }
+
+    // =====================================================
+    // 4. OIL SPILL DATA
+    // =====================================================
+    const dropletSVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.5s6.5 7 6.5 11.5a6.5 6.5 0 0 1-13 0C5.5 9.5 12 2.5 12 2.5z"/></svg>';
 
     async function loadOilSpillData() {
       const tbody = document.getElementById('oilSpillTableBody');
@@ -911,7 +1090,6 @@
 
         oilSpillLayerGroup.clearLayers();
         tbody.innerHTML = '';
-        allBounds = [];
 
         if (dataRows.length > 1) {
           const rows = dataRows.filter(r => {
@@ -992,7 +1170,7 @@
     }
 
     // =====================================================
-    // 4. MANGROVE DATA (PENANAMAN MANGROVE)
+    // 5. MANGROVE DATA (PENANAMAN MANGROVE)
     // =====================================================
     const normHeader = h => (h || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 
@@ -1087,7 +1265,6 @@
           m.on('mouseover', () => m.setStyle({ radius: 9, weight: 2 }));
           m.on('mouseout',  () => m.setStyle({ radius: i.isReal ? 6 : 5, weight: 1.5 }));
 
-          // POP-UP SESUAI SHEETS TANPA PEMBULATAN
           m.bindPopup(`
             <div style="color:#0f172a; font-family:'Inter', sans-serif; font-size:12px; line-height:1.5; min-width:290px;">
               <strong style="color:${tone}; font-size:13px; display:block; margin-bottom:8px;">🌿 ${i.name}</strong>
@@ -1120,7 +1297,7 @@
     }
 
     // =====================================================
-    // 4b. INVENTARISASI TERUMBU KARANG
+    // 6. INVENTARISASI TERUMBU KARANG
     // =====================================================
     let coralChart;
     const CORAL_ORDER = ['Baik Sekali', 'Baik', 'Sedang', 'Buruk'];
@@ -1188,7 +1365,7 @@
         let plotted = 0;
         items.forEach(i => {
           if (isNaN(i.lat) || isNaN(i.lng)) return;
-          if (i.lat < -12 || i.lat > 8 || i.lng < 94 || i.lng > 142) return; // di luar Indonesia
+          if (i.lat < -12 || i.lat > 8 || i.lng < 94 || i.lng > 142) return;
 
           const col = CORAL_COLORS[i.status];
           const m = L.circleMarker([i.lat, i.lng], {
@@ -1234,7 +1411,7 @@
     }
 
     // =====================================================
-    // 5. LOAD GEOJSON / JS POLYGON
+    // 7. LOAD GEOJSON / JS POLYGON
     // =====================================================
     async function loadGeoJsonPolygon(url, groupLayer, styleFn, countElId, popupTitle) {
       const cntEl = document.getElementById(countElId);
@@ -1298,7 +1475,7 @@
     }
 
     // =====================================================
-    // 6. INITIALIZATION
+    // 8. INITIALIZATION
     // =====================================================
     window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
@@ -1333,6 +1510,7 @@
       }
 
       refreshLayerUI();
+      loadCoralRestorationData();
       loadOilSpillData();
       loadMangroveData();
       loadPtfiPolygon();
